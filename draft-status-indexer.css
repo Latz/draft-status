@@ -78,3 +78,141 @@
 .draft-status-metabox-published .draft-status-published {
     font-size: 14px;
 }
+
+/*
+ * Dashboard Widget Styles
+ * ========================
+ * Styles for the draft status dashboard widget that displays
+ * statistics about draft completion on the WordPress dashboard.
+ */
+
+/*
+ * Dashboard Widget Container
+ * ===========================
+ * Main container for the dashboard widget content.
+ */
+.draft-status-widget {
+    font-size: 14px;
+}
+
+/*
+ * Section Container
+ * =================
+ * Container for each section (incomplete/complete drafts).
+ */
+.draft-status-section {
+    margin-bottom: 20px;
+}
+
+.draft-status-section:last-of-type {
+    margin-bottom: 15px;
+}
+
+/*
+ * Section Title
+ * =============
+ * Title for each section with icon and count.
+ */
+.draft-status-section-title {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/*
+ * Draft List
+ * ==========
+ * List of draft titles.
+ */
+.draft-status-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/*
+ * Draft List Item
+ * ===============
+ * Individual draft item in the list.
+ */
+.draft-status-item {
+    margin: 0 0 8px 0;
+    padding: 0;
+}
+
+.draft-status-item:last-child {
+    margin-bottom: 0;
+}
+
+/*
+ * Draft Item Link
+ * ===============
+ * The clickable link container for each draft item.
+ */
+.draft-status-item-link {
+    display: block;
+    text-decoration: none;
+    padding: 8px 10px;
+    border-radius: 3px;
+    background: #f6f7f7;
+    transition: background 0.2s;
+}
+
+.draft-status-item-link:hover {
+    background: #dcdcde;
+}
+
+/*
+ * Draft Title
+ * ===========
+ * The title of the draft with ellipsis truncation.
+ */
+.draft-status-title {
+    color: #2271b1;
+    font-weight: 500;
+    margin-bottom: 3px;
+
+    /* Ellipsis truncation */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.draft-status-item-link:hover .draft-status-title {
+    color: #135e96;
+}
+
+/*
+ * Draft Modified Date
+ * ===================
+ * The last modified date displayed below the title.
+ */
+.draft-status-date {
+    color: #646970;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/*
+ * View All Drafts Link
+ * =====================
+ * Link at the bottom of the widget to navigate to the drafts list.
+ * Styled to stand out as a call-to-action.
+ */
+.draft-status-link {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.draft-status-link a {
+    text-decoration: none;
+    color: #2271b1;
+    font-weight: 500;
+}
+
+.draft-status-link a:hover {
+    color: #135e96;
+}
