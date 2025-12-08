@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv:*)",
+      "WebFetch(domain:developer.wordpress.org)",
+      "Bash(php -r:*)",
+      "Bash(wp i18n make-pot:*)",
+      "Bash(wp i18n make-mo:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

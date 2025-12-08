@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- Background circle -->
+  <circle cx="128" cy="128" r="120" fill="#0073aa" opacity="0.1"/>
+  
+  <!-- Document/Paper -->
+  <path d="M 80 50 L 80 206 L 176 206 L 176 90 L 136 50 Z" 
+        fill="#0073aa" 
+        stroke="#0073aa" 
+        stroke-width="2"/>
+  
+  <!-- Folded corner -->
+  <path d="M 136 50 L 136 90 L 176 90 Z" 
+        fill="#005a87" 
+        opacity="0.7"/>
+  
+  <!-- Document lines (to show it's text/writing) -->
+  <line x1="95" y1="110" x2="145" y2="110" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+  <line x1="95" y1="130" x2="155" y2="130" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+  <line x1="95" y1="150" x2="140" y2="150" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+  
+  <!-- Large checkmark (main feature) -->
+  <g transform="translate(110, 155)">
+    <circle cx="30" cy="30" r="35" fill="#46b450"/>
+    <path d="M 15 30 L 25 40 L 45 18" 
+          fill="none" 
+          stroke="#ffffff" 
+          stroke-width="6" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+  </g>
+</svg>

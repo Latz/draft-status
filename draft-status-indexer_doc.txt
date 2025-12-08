@@ -1,0 +1,135 @@
+# DraftStatusIndexer
+
+A simple WordPress plugin that helps you track and sort your draft posts by completion status.
+
+## Description
+
+DraftStatusIndexer adds a completion tracking system to your WordPress posts, making it easy to manage your writing workflow. Mark drafts as complete or incomplete and sort them accordingly in your Posts admin screen.
+
+Perfect for writers, bloggers, and content managers who want to keep track of which drafts are ready for review and which still need work.
+
+### Features
+
+* ✅ Add a "Writing Status" column to your Posts admin page
+* 🎯 Visual indicators showing complete (green checkmark) or incomplete (red X) status
+* 📊 Sortable column - click to sort posts by completion status
+* ✏️ Simple checkbox in the post editor to mark drafts as complete
+* 🚀 Lightweight and fast - no bloat
+* 🔒 Secure - uses WordPress nonces and capability checks
+
+## Installation
+
+### Automatic Installation
+
+1. Log in to your WordPress admin panel
+2. Navigate to Plugins → Add New
+3. Search for "DraftStatusIndexer"
+4. Click "Install Now" and then "Activate"
+
+### Manual Installation
+
+1. Download the plugin zip file
+2. Log in to your WordPress admin panel
+3. Navigate to Plugins → Add New → Upload Plugin
+4. Choose the zip file and click "Install Now"
+5. Activate the plugin through the Plugins menu
+
+### Manual Installation (via FTP)
+
+1. Download and extract the plugin zip file
+2. Upload the `DraftStatusIndexer` folder to your `/wp-content/plugins/` directory
+3. Activate the plugin through the Plugins menu in WordPress
+
+## Usage
+
+### Marking Drafts as Complete
+
+1. Create or edit any post
+2. Look for the "Writing Completion Status" box in the right sidebar
+3. Check the box labeled "Mark this draft as complete"
+4. Save or update your post
+
+### Sorting Drafts by Completion Status
+
+1. Navigate to Posts → All Posts
+2. Look for the "Writing Status" column
+3. Click the column header to sort posts by completion status
+4. Click again to reverse the sort order
+
+### Visual Indicators
+
+* **✓ Complete** (green) - Draft is marked as complete and ready for review
+* **✗ Incomplete** (red) - Draft still needs work
+
+## Frequently Asked Questions
+
+### Does this work with custom post types?
+
+Currently, the plugin only works with standard WordPress posts. Support for custom post types may be added in future versions.
+
+### Will this affect my published posts?
+
+No, the completion status is just metadata. It doesn't affect post publishing or visibility on your site.
+
+### Can I bulk edit completion status?
+
+Not at this time. You need to edit each post individually to change its completion status.
+
+### Does this plugin slow down my site?
+
+No. The plugin is lightweight and only adds minimal database queries on admin pages. It has no impact on your front-end site performance.
+
+### Can multiple authors use this plugin?
+
+Yes! Each author can mark their own drafts as complete or incomplete. The status is visible to all users who can access the Posts admin screen.
+
+## Screenshots
+
+1. Writing Status column in Posts admin showing complete/incomplete indicators
+2. Completion checkbox in the post editor sidebar
+3. Sortable column header for organizing drafts
+
+## Changelog
+
+### 1.0.0
+* Initial release
+* Add Writing Status column to Posts admin
+* Add completion checkbox to post editor
+* Enable sorting by completion status
+* Visual indicators for complete/incomplete status
+
+## Upgrade Notice
+
+### 1.0.0
+Initial release of DraftStatusIndexer.
+
+## Support
+
+For bug reports, feature requests, or support questions, please use the WordPress.org support forums or visit our GitHub repository.
+
+## Privacy Policy
+
+This plugin does not collect, store, or transmit any personal data. All completion status information is stored locally in your WordPress database as post metadata.
+
+## Credits
+
+Developed with ❤️ for the WordPress community.
+
+## License
+
+This plugin is licensed under the GPL v2 or later.
+
+```
+DraftStatusIndexer
+Copyright (C) 2025
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+```

@@ -1,0 +1,80 @@
+/**
+ * Draft Status Indexer Styles
+ *
+ * Provides visual styling for draft completion status indicators
+ * in the WordPress admin area. Used in both the posts list column
+ * and the post editor meta box.
+ *
+ * @package DraftStatusIndexer
+ * @since 1.0.0
+ */
+
+/*
+ * Status Indicator Base Styles
+ * =============================
+ * Base class applied to all status indicators.
+ * Ensures consistent bold font weight across all statuses.
+ */
+.draft-status-indicator {
+    font-weight: bold;
+}
+
+/*
+ * Published Status - Blue
+ * ========================
+ * Applied to posts that have been published.
+ * Uses WordPress admin blue color (#2271b1) for consistency with
+ * the WordPress admin interface.
+ *
+ * Symbol: ● (filled circle)
+ */
+.draft-status-published {
+    color: #2271b1; /* WordPress admin blue */
+    font-weight: bold;
+}
+
+/*
+ * Complete Status - Green
+ * ========================
+ * Applied to draft posts that are marked as complete.
+ * Uses WordPress success green (#46b450) to indicate positive status.
+ *
+ * Symbol: ✓ (checkmark)
+ */
+.draft-status-complete {
+    color: #46b450; /* WordPress success green */
+    font-weight: bold;
+}
+
+/*
+ * Incomplete Status - Red
+ * ========================
+ * Applied to draft posts that are not yet complete.
+ * Uses WordPress error red (#dc3232) to draw attention to unfinished work.
+ *
+ * Symbol: ✗ (X mark)
+ */
+.draft-status-incomplete {
+    color: #dc3232; /* WordPress error red */
+    font-weight: bold;
+}
+
+/*
+ * Meta Box Published Status Container
+ * ====================================
+ * Removes default margin for published post indicator in the meta box.
+ * Creates a cleaner, more compact layout in the sidebar.
+ */
+.draft-status-metabox-published {
+    margin: 0;
+}
+
+/*
+ * Meta Box Published Status Text
+ * ===============================
+ * Increases font size for the published indicator in the meta box
+ * to make it more prominent and easier to read at a glance.
+ */
+.draft-status-metabox-published .draft-status-published {
+    font-size: 14px;
+}

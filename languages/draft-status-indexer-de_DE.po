@@ -1,0 +1,58 @@
+# Copyright (C) 2025 Latz
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Draft Status Indexer 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/DraftStatusIndexer\n"
+"Last-Translator: Latz <noreply@elektroelch.de>\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-12-06T13:24:15+00:00\n"
+"PO-Revision-Date: 2025-12-06 14:24+0000\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: draft-status-indexer\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Plugin Name of the plugin
+#: draft-status-indexer.php
+msgid "Draft Status Indexer"
+msgstr "Entwurfsstatus-Indexer"
+
+#. Plugin URI of the plugin
+#: draft-status-indexer.php
+msgid "https://github.com/yourusername/draft-status-indexer"
+msgstr "https://github.com/yourusername/draft-status-indexer"
+
+#. Description of the plugin
+#: draft-status-indexer.php
+msgid "Mark draft posts by completion status (complete/incomplete)"
+msgstr "Entwurfsbeiträge nach Fertigstellungsstatus markieren (fertig/unfertig)"
+
+#: draft-status-indexer.php:96
+msgid "Writing Status"
+msgstr "Schreibstatus"
+
+#: draft-status-indexer.php:119
+#: draft-status-indexer.php:220
+msgid "Published"
+msgstr "Veröffentlicht"
+
+#: draft-status-indexer.php:129
+#: draft-status-indexer.php:230
+msgid "Complete"
+msgstr "Fertig"
+
+#: draft-status-indexer.php:135
+msgid "Incomplete"
+msgstr "Unfertig"
+
+#: draft-status-indexer.php:191
+msgid "Completion Status"
+msgstr "Fertigstellungsstatus"
+
+#: draft-status-indexer.php:234
+msgid "Check when you've finished writing this draft. This helps you sort and track your writing progress."
+msgstr "Aktivieren, wenn Sie mit dem Schreiben dieses Entwurfs fertig sind. Dies hilft Ihnen, Ihren Schreibfortschritt zu sortieren und zu verfolgen."
