@@ -62,9 +62,6 @@ class DraftStatusIndexer {
 
         // Handle filter query
         add_filter('parse_query', array($this, 'filter_posts_by_completion'));
-
-        // Add dashboard widget
-        add_action('wp_dashboard_setup', array($this, 'add_dashboard_widget'));
     }
 
     /**
@@ -85,7 +82,7 @@ class DraftStatusIndexer {
         // Enqueue the plugin stylesheet with versioning for cache busting
         wp_enqueue_style(
             'draft-status-indexer',                      // Handle
-            plugin_dir_url(__FILE__) . 'DraftStatusIndexer.css', // Source
+            plugin_dir_url(__FILE__) . 'draft-status-indexer.css', // Source
             array(),                                      // Dependencies
             '1.0.0'                                      // Version
         );
@@ -109,8 +106,8 @@ class DraftStatusIndexer {
     /**
      * Display column content
      *
-     * Outputs the status indicator (Published/Complete/Incomplete) for each post row.
-     * Published posts show a blue indicator, complete drafts show green, incomplete show red.
+     * Outputs the status indicator (Complete/Incomplete) for draft posts.
+     * Complete drafts show green, incomplete show red. Published posts show nothing.
      *
      * @since 1.0.0
      * @param string $column The column identifier.
@@ -121,13 +118,8 @@ class DraftStatusIndexer {
         if ($column === 'draft_completion') {
             $post_status = get_post_status($post_id);
 
-            // Published posts - show blue "Published" indicator
-            if ($post_status === 'publish') {
-                printf(
-                    '<span class="draft-status-indicator draft-status-published">● %s</span>',
-                    esc_html__('Published', 'draft-status-indexer')
-                );
-            } else {
+            // Only show status for draft posts
+            if ($post_status !== 'publish') {
                 // Draft posts - check completion status from post meta
                 $is_complete = get_post_meta($post_id, '_draft_complete', true);
 
@@ -209,27 +201,21 @@ class DraftStatusIndexer {
      * Render meta box content
      *
      * Displays the meta box content in the post editor.
-     * For published posts: Shows a blue "Published" indicator.
      * For drafts: Shows a checkbox to mark the draft as complete.
+     * For published posts: Shows nothing (meta box is hidden for published posts).
      *
      * @since 1.0.0
      * @param WP_Post $post The current post object.
      */
     public function render_completion_meta_box($post) {
-        // Add nonce field for security verification
-        wp_nonce_field('draft_completion_nonce', 'draft_completion_nonce_field');
-
         // Get the current post status
         $post_status = get_post_status($post->ID);
 
-        // Published posts - show read-only status indicator
-        if ($post_status === 'publish') {
-            ?>
-            <p class="draft-status-metabox-published">
-                <span class="draft-status-indicator draft-status-published">● <?php esc_html_e('Published', 'draft-status-indexer'); ?></span>
-            </p>
-            <?php
-        } else {
+        // Only show for draft posts
+        if ($post_status !== 'publish') {
+            // Add nonce field for security verification
+            wp_nonce_field('draft_completion_nonce', 'draft_completion_nonce_field');
+
             // Draft posts - show completion checkbox
             $is_complete = get_post_meta($post->ID, '_draft_complete', true);
             ?>
@@ -287,6 +273,75 @@ class DraftStatusIndexer {
         } else {
             // Checkbox not checked - save as 'no'
             update_post_meta($post_id, '_draft_complete', 'no');
+        }
+    }
+
+    /**
+     * Add filter dropdown to posts list
+     *
+     * Adds a dropdown filter above the posts list to filter by completion status.
+     * Shows options: All, Complete, and Incomplete.
+     *
+     * @since 1.0.0
+     * @param string $post_type The current post type.
+     */
+    public function add_completion_filter_dropdown($post_type) {
+        // Only show on the posts list page
+        if ($post_type !== 'post') {
+            return;
+        }
+
+        // Get current filter value from URL
+        $selected = isset($_GET['draft_completion_filter']) ? sanitize_text_field(wp_unslash($_GET['draft_completion_filter'])) : '';
+
+        ?>
+        <select name="draft_completion_filter">
+            <option value=""><?php esc_html_e('All Completion Status', 'draft-status-indexer'); ?></option>
+            <option value="complete" <?php selected($selected, 'complete'); ?>><?php esc_html_e('Complete', 'draft-status-indexer'); ?></option>
+            <option value="incomplete" <?php selected($selected, 'incomplete'); ?>><?php esc_html_e('Incomplete', 'draft-status-indexer'); ?></option>
+        </select>
+        <?php
+    }
+
+    /**
+     * Filter posts by completion status
+     *
+     * Modifies the query to filter posts based on the selected completion status
+     * from the dropdown filter. Only shows draft posts when filtering.
+     *
+     * @since 1.0.0
+     * @param WP_Query $query The WordPress query object.
+     */
+    public function filter_posts_by_completion($query) {
+        global $pagenow;
+
+        // Only modify admin queries on the posts list page
+        if (!is_admin() || $pagenow !== 'edit.php' || !isset($_GET['draft_completion_filter'])) {
+            return;
+        }
+
+        $filter = sanitize_text_field(wp_unslash($_GET['draft_completion_filter']));
+
+        if ($filter === 'complete') {
+            // Filter to show only complete drafts
+            $query->set('post_status', 'draft');
+            $query->set('meta_key', '_draft_complete');
+            $query->set('meta_value', 'yes');
+        } elseif ($filter === 'incomplete') {
+            // Filter to show only incomplete drafts
+            $query->set('post_status', 'draft');
+            $query->set('meta_query', array(
+                'relation' => 'OR',
+                array(
+                    'key' => '_draft_complete',
+                    'value' => 'no',
+                    'compare' => '='
+                ),
+                array(
+                    'key' => '_draft_complete',
+                    'compare' => 'NOT EXISTS'
+                )
+            ));
         }
     }
 }

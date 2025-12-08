@@ -5,7 +5,9 @@
       "WebFetch(domain:developer.wordpress.org)",
       "Bash(php -r:*)",
       "Bash(wp i18n make-pot:*)",
-      "Bash(wp i18n make-mo:*)"
+      "Bash(wp i18n make-mo:*)",
+      "Bash(php -l:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []
