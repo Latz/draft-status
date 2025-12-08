@@ -197,6 +197,63 @@
 }
 
 /*
+ * Draft Meta Information
+ * ======================
+ * Meta information displayed below draft titles (modified date, due date).
+ */
+.draft-status-meta {
+    color: #646970;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/*
+ * Due Date Styles
+ * ===============
+ * Styles for due date indicators in posts list and dashboard widget.
+ */
+
+/*
+ * Base Due Date Style
+ * ===================
+ * Applied to all due date indicators.
+ */
+.draft-due-date {
+    font-size: 12px;
+    display: inline-block;
+}
+
+/*
+ * Overdue Date Style
+ * ==================
+ * Red color for overdue drafts.
+ */
+.draft-due-overdue {
+    color: #dc3232;
+    font-weight: 600;
+}
+
+/*
+ * Due Today Style
+ * ===============
+ * Orange color for drafts due today.
+ */
+.draft-due-today {
+    color: #f56e28;
+    font-weight: 600;
+}
+
+/*
+ * Due Soon Style
+ * ==============
+ * Yellow/amber color for drafts due within 3 days.
+ */
+.draft-due-soon {
+    color: #dba617;
+    font-weight: 600;
+}
+
+/*
  * View All Drafts Link
  * =====================
  * Link at the bottom of the widget to navigate to the drafts list.
@@ -215,4 +272,87 @@
 
 .draft-status-link a:hover {
     color: #135e96;
+}
+
+/*
+ * Priority Indicator Styles
+ * ==========================
+ * Styles for priority level badges displayed in posts list,
+ * dashboard widget, and other areas. Priority badges use
+ * distinct colors to quickly identify importance level.
+ */
+
+/*
+ * Base Priority Style
+ * ===================
+ * Applied to all priority indicators. Creates a small, subtle badge
+ * with minimal styling for clean appearance.
+ */
+.draft-priority {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    opacity: 0.8;
+}
+
+/*
+ * Urgent Priority - Red
+ * =====================
+ * Highest priority level. Subtle red to indicate urgency
+ * without overwhelming the interface.
+ */
+.draft-priority-urgent {
+    background: #fff0f0;
+    color: #d63638;
+    border: 1px solid #f0d0d0;
+}
+
+/*
+ * High Priority - Orange
+ * ======================
+ * High priority level. Subtle orange to indicate importance.
+ */
+.draft-priority-high {
+    background: #fff8f0;
+    color: #cc6d2e;
+    border: 1px solid #f5e0cc;
+}
+
+/*
+ * Medium Priority - Blue/Gray
+ * ===========================
+ * Standard priority level. Subtle neutral color.
+ */
+.draft-priority-medium {
+    background: #f5f8fa;
+    color: #50575e;
+    border: 1px solid #dfe4e8;
+}
+
+/*
+ * Low Priority - Green
+ * ====================
+ * Lowest priority level. Very subtle muted green.
+ */
+.draft-priority-low {
+    background: #f6faf7;
+    color: #6ba46c;
+    border: 1px solid #e0f0e0;
+}
+
+/*
+ * Priority Badge in Dashboard Widget Title
+ * =========================================
+ * Adjusts priority badge styling when displayed in dashboard widget
+ * draft titles to ensure it doesn't break the layout.
+ * Adds spacing after the badge before the title text.
+ */
+.draft-status-title .draft-priority {
+    vertical-align: middle;
+    margin-right: 6px;
 }
