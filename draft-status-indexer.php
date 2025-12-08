@@ -3,7 +3,7 @@
  * Plugin Name: Draft Status Indexer
  * Plugin URI: https://github.com/yourusername/draft-status-indexer
  * Description: Mark draft posts by completion status (complete/incomplete)
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Latz
  * Author URI: https://elektroelch.de
  * * License: GPL v2 or later
