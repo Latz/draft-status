@@ -3,7 +3,7 @@
  * Plugin Name: Draft Status Indexer
  * Plugin URI: https://github.com/yourusername/draft-status-indexer
  * Description: Mark draft posts by completion status (complete/incomplete)
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Latz
  * Author URI: https://elektroelch.de
  * * License: GPL v2 or later
@@ -62,20 +62,24 @@ class DraftStatusIndexer {
 
         // Handle filter query
         add_filter('parse_query', array($this, 'filter_posts_by_completion'));
+
+        // Add dashboard widget
+        add_action('wp_dashboard_setup', array($this, 'add_dashboard_widget'));
     }
 
     /**
      * Enqueue admin stylesheets
      *
      * Loads the plugin's CSS file only on relevant admin pages to improve performance.
-     * The CSS is only loaded on posts list and post editor pages.
+     * The CSS is loaded on posts list, post editor, and dashboard pages.
      *
      * @since 1.0.0
      * @param string $hook The current admin page hook.
      */
     public function enqueue_admin_styles($hook) {
-        // Only load on edit.php (posts list), post.php (edit post), and post-new.php (new post) pages
-        if ($hook !== 'edit.php' && $hook !== 'post.php' && $hook !== 'post-new.php') {
+        // Only load on relevant pages: edit.php (posts list), post.php (edit post),
+        // post-new.php (new post), and index.php (dashboard)
+        if ($hook !== 'edit.php' && $hook !== 'post.php' && $hook !== 'post-new.php' && $hook !== 'index.php') {
             return;
         }
 
@@ -84,7 +88,7 @@ class DraftStatusIndexer {
             'draft-status-indexer',                      // Handle
             plugin_dir_url(__FILE__) . 'draft-status-indexer.css', // Source
             array(),                                      // Dependencies
-            '1.0.0'                                      // Version
+            '1.2.0'                                      // Version
         );
     }
 
@@ -343,6 +347,142 @@ class DraftStatusIndexer {
                 )
             ));
         }
+    }
+
+    /**
+     * Add dashboard widget
+     *
+     * Registers a dashboard widget that shows draft statistics.
+     *
+     * @since 1.0.0
+     */
+    public function add_dashboard_widget() {
+        wp_add_dashboard_widget(
+            'draft_status_widget',                           // Widget ID
+            __('Draft Writing Status', 'draft-status-indexer'), // Widget title
+            array($this, 'render_dashboard_widget')          // Callback function
+        );
+    }
+
+    /**
+     * Render dashboard widget content
+     *
+     * Displays statistics about draft completion status on the dashboard.
+     * Shows lists of incomplete and complete drafts with their titles.
+     *
+     * @since 1.0.0
+     */
+    public function render_dashboard_widget() {
+        // Query for incomplete drafts
+        $incomplete_query = new WP_Query(array(
+            'post_type' => 'post',
+            'post_status' => 'draft',
+            'meta_query' => array(
+                'relation' => 'OR',
+                array(
+                    'key' => '_draft_complete',
+                    'value' => 'no',
+                    'compare' => '='
+                ),
+                array(
+                    'key' => '_draft_complete',
+                    'compare' => 'NOT EXISTS'
+                )
+            ),
+            'posts_per_page' => -1,
+            'orderby' => 'modified',
+            'order' => 'DESC'
+        ));
+
+        // Query for complete drafts
+        $complete_query = new WP_Query(array(
+            'post_type' => 'post',
+            'post_status' => 'draft',
+            'meta_key' => '_draft_complete',
+            'meta_value' => 'yes',
+            'posts_per_page' => -1,
+            'orderby' => 'modified',
+            'order' => 'DESC'
+        ));
+
+        ?>
+        <div class="draft-status-widget">
+            <?php if ($incomplete_query->have_posts()): ?>
+                <div class="draft-status-section">
+                    <h4 class="draft-status-section-title">
+                        <span class="draft-status-indicator draft-status-incomplete">✗</span>
+                        <?php
+                        printf(
+                            esc_html__('Incomplete Drafts (%d)', 'draft-status-indexer'),
+                            $incomplete_query->found_posts
+                        );
+                        ?>
+                    </h4>
+                    <ul class="draft-status-list">
+                        <?php while ($incomplete_query->have_posts()): $incomplete_query->the_post(); ?>
+                            <li class="draft-status-item">
+                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link">
+                                    <div class="draft-status-title"><?php echo esc_html(get_the_title()); ?></div>
+                                    <div class="draft-status-date">
+                                        <?php
+                                        printf(
+                                            esc_html__('Last modified: %s', 'draft-status-indexer'),
+                                            get_the_modified_date()
+                                        );
+                                        ?>
+                                    </div>
+                                </a>
+                            </li>
+                        <?php endwhile; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($complete_query->have_posts()): ?>
+                <div class="draft-status-section">
+                    <h4 class="draft-status-section-title">
+                        <span class="draft-status-indicator draft-status-complete">✓</span>
+                        <?php
+                        printf(
+                            esc_html__('Complete Drafts Ready for Review (%d)', 'draft-status-indexer'),
+                            $complete_query->found_posts
+                        );
+                        ?>
+                    </h4>
+                    <ul class="draft-status-list">
+                        <?php while ($complete_query->have_posts()): $complete_query->the_post(); ?>
+                            <li class="draft-status-item">
+                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link">
+                                    <div class="draft-status-title"><?php echo esc_html(get_the_title()); ?></div>
+                                    <div class="draft-status-date">
+                                        <?php
+                                        printf(
+                                            esc_html__('Last modified: %s', 'draft-status-indexer'),
+                                            get_the_modified_date()
+                                        );
+                                        ?>
+                                    </div>
+                                </a>
+                            </li>
+                        <?php endwhile; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!$incomplete_query->have_posts() && !$complete_query->have_posts()): ?>
+                <p><?php esc_html_e('No drafts found. Start writing!', 'draft-status-indexer'); ?></p>
+            <?php endif; ?>
+
+            <p class="draft-status-link">
+                <a href="<?php echo esc_url(admin_url('edit.php?post_status=draft&post_type=post')); ?>">
+                    <?php esc_html_e('View All Drafts →', 'draft-status-indexer'); ?>
+                </a>
+            </p>
+        </div>
+        <?php
+
+        // Reset post data
+        wp_reset_postdata();
     }
 }
 
