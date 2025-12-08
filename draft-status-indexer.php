@@ -65,6 +65,9 @@ class DraftStatusIndexer {
 
         // Add dashboard widget
         add_action('wp_dashboard_setup', array($this, 'add_dashboard_widget'));
+
+        // Register meta field for REST API support
+        add_action('init', array($this, 'register_meta_field'));
     }
 
     /**
@@ -483,6 +486,32 @@ class DraftStatusIndexer {
 
         // Reset post data
         wp_reset_postdata();
+    }
+
+    /**
+     * Register meta field for REST API
+     *
+     * Registers the _draft_complete meta field with REST API support
+     * for Gutenberg block editor and headless WordPress usage.
+     *
+     * @since 1.2.0
+     */
+    public function register_meta_field() {
+        register_post_meta('post', '_draft_complete', array(
+            'type' => 'string',
+            'description' => __('Draft completion status', 'draft-status-indexer'),
+            'single' => true,
+            'show_in_rest' => true,
+            'default' => 'no',
+            'sanitize_callback' => function($value) {
+                // Only allow 'yes' or 'no' values
+                return ($value === 'yes') ? 'yes' : 'no';
+            },
+            'auth_callback' => function() {
+                // Only allow users who can edit posts
+                return current_user_can('edit_posts');
+            }
+        ));
     }
 }
 
