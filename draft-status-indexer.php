@@ -133,13 +133,15 @@ class DraftStatusIndexer {
                 // Complete drafts - show green checkmark
                 if ($is_complete === 'yes') {
                     printf(
-                        '<span class="draft-status-indicator draft-status-complete">✓ %s</span>',
+                        '<span class="draft-status-indicator draft-status-complete" role="status" aria-label="%s">✓ %s</span>',
+                        esc_attr__('Draft completion status: Complete', 'draft-status-indexer'),
                         esc_html__('Complete', 'draft-status-indexer')
                     );
                 } else {
                     // Incomplete drafts - show red X
                     printf(
-                        '<span class="draft-status-indicator draft-status-incomplete">✗ %s</span>',
+                        '<span class="draft-status-indicator draft-status-incomplete" role="status" aria-label="%s">✗ %s</span>',
+                        esc_attr__('Draft completion status: Incomplete', 'draft-status-indexer'),
                         esc_html__('Incomplete', 'draft-status-indexer')
                     );
                 }
@@ -227,12 +229,12 @@ class DraftStatusIndexer {
             $is_complete = get_post_meta($post->ID, '_draft_complete', true);
             ?>
             <p>
-                <label>
-                    <input type="checkbox" name="draft_complete" value="yes" <?php checked($is_complete, 'yes'); ?>>
+                <label for="draft_complete_checkbox">
+                    <input type="checkbox" id="draft_complete_checkbox" name="draft_complete" value="yes" aria-describedby="draft_complete_description" <?php checked($is_complete, 'yes'); ?>>
                     <?php esc_html_e('Complete', 'draft-status-indexer'); ?>
                 </label>
             </p>
-            <p class="description">
+            <p class="description" id="draft_complete_description">
                 <?php esc_html_e('Check when you\'ve finished writing this draft. This helps you sort and track your writing progress.', 'draft-status-indexer'); ?>
             </p>
             <?php
@@ -302,7 +304,7 @@ class DraftStatusIndexer {
         $selected = isset($_GET['draft_completion_filter']) ? sanitize_text_field(wp_unslash($_GET['draft_completion_filter'])) : '';
 
         ?>
-        <select name="draft_completion_filter">
+        <select name="draft_completion_filter" id="draft_completion_filter" aria-label="<?php esc_attr_e('Filter posts by completion status', 'draft-status-indexer'); ?>">
             <option value=""><?php esc_html_e('All Completion Status', 'draft-status-indexer'); ?></option>
             <option value="complete" <?php selected($selected, 'complete'); ?>><?php esc_html_e('Complete', 'draft-status-indexer'); ?></option>
             <option value="incomplete" <?php selected($selected, 'incomplete'); ?>><?php esc_html_e('Incomplete', 'draft-status-indexer'); ?></option>
@@ -411,9 +413,9 @@ class DraftStatusIndexer {
         ?>
         <div class="draft-status-widget">
             <?php if ($incomplete_query->have_posts()): ?>
-                <div class="draft-status-section">
-                    <h4 class="draft-status-section-title">
-                        <span class="draft-status-indicator draft-status-incomplete">✗</span>
+                <section class="draft-status-section" aria-labelledby="draft-status-incomplete-title">
+                    <h4 class="draft-status-section-title" id="draft-status-incomplete-title">
+                        <span class="draft-status-indicator draft-status-incomplete" aria-hidden="true">✗</span>
                         <?php
                         printf(
                             esc_html__('Incomplete Drafts (%d)', 'draft-status-indexer'),
@@ -424,7 +426,7 @@ class DraftStatusIndexer {
                     <ul class="draft-status-list">
                         <?php while ($incomplete_query->have_posts()): $incomplete_query->the_post(); ?>
                             <li class="draft-status-item">
-                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link">
+                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link" aria-label="<?php echo esc_attr(sprintf(__('Edit incomplete draft: %s, last modified %s', 'draft-status-indexer'), get_the_title(), get_the_modified_date())); ?>">
                                     <div class="draft-status-title"><?php echo esc_html(get_the_title()); ?></div>
                                     <div class="draft-status-date">
                                         <?php
@@ -438,13 +440,13 @@ class DraftStatusIndexer {
                             </li>
                         <?php endwhile; ?>
                     </ul>
-                </div>
+                </section>
             <?php endif; ?>
 
             <?php if ($complete_query->have_posts()): ?>
-                <div class="draft-status-section">
-                    <h4 class="draft-status-section-title">
-                        <span class="draft-status-indicator draft-status-complete">✓</span>
+                <section class="draft-status-section" aria-labelledby="draft-status-complete-title">
+                    <h4 class="draft-status-section-title" id="draft-status-complete-title">
+                        <span class="draft-status-indicator draft-status-complete" aria-hidden="true">✓</span>
                         <?php
                         printf(
                             esc_html__('Complete Drafts Ready for Review (%d)', 'draft-status-indexer'),
@@ -455,7 +457,7 @@ class DraftStatusIndexer {
                     <ul class="draft-status-list">
                         <?php while ($complete_query->have_posts()): $complete_query->the_post(); ?>
                             <li class="draft-status-item">
-                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link">
+                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link" aria-label="<?php echo esc_attr(sprintf(__('Edit complete draft: %s, last modified %s', 'draft-status-indexer'), get_the_title(), get_the_modified_date())); ?>">
                                     <div class="draft-status-title"><?php echo esc_html(get_the_title()); ?></div>
                                     <div class="draft-status-date">
                                         <?php
@@ -469,15 +471,15 @@ class DraftStatusIndexer {
                             </li>
                         <?php endwhile; ?>
                     </ul>
-                </div>
+                </section>
             <?php endif; ?>
 
             <?php if (!$incomplete_query->have_posts() && !$complete_query->have_posts()): ?>
-                <p><?php esc_html_e('No drafts found. Start writing!', 'draft-status-indexer'); ?></p>
+                <output><?php esc_html_e('No drafts found. Start writing!', 'draft-status-indexer'); ?></output>
             <?php endif; ?>
 
             <p class="draft-status-link">
-                <a href="<?php echo esc_url(admin_url('edit.php?post_status=draft&post_type=post')); ?>">
+                <a href="<?php echo esc_url(admin_url('edit.php?post_status=draft&post_type=post')); ?>" aria-label="<?php esc_attr_e('View all draft posts in the posts list', 'draft-status-indexer'); ?>">
                     <?php esc_html_e('View All Drafts →', 'draft-status-indexer'); ?>
                 </a>
             </p>
