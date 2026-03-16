@@ -1,10 +1,10 @@
-# DraftStatusIndexer
+# Draft Status
 
 A simple WordPress plugin that helps you track and sort your draft posts by completion status.
 
 ## Description
 
-DraftStatusIndexer adds a completion tracking system to your WordPress posts, making it easy to manage your writing workflow. Mark drafts as complete or incomplete and sort them accordingly in your Posts admin screen.
+Draft Status adds a completion tracking system to your WordPress posts, making it easy to manage your writing workflow. Mark drafts as complete or incomplete and sort them accordingly in your Posts admin screen.
 
 Perfect for writers, bloggers, and content managers who want to keep track of which drafts are ready for review and which still need work.
 
@@ -23,7 +23,7 @@ Perfect for writers, bloggers, and content managers who want to keep track of wh
 
 1. Log in to your WordPress admin panel
 2. Navigate to Plugins → Add New
-3. Search for "DraftStatusIndexer"
+3. Search for "Draft Status"
 4. Click "Install Now" and then "Activate"
 
 ### Manual Installation
@@ -37,7 +37,7 @@ Perfect for writers, bloggers, and content managers who want to keep track of wh
 ### Manual Installation (via FTP)
 
 1. Download and extract the plugin zip file
-2. Upload the `DraftStatusIndexer` folder to your `/wp-content/plugins/` directory
+2. Upload the `draft-status` folder to your `/wp-content/plugins/` directory
 3. Activate the plugin through the Plugins menu in WordPress
 
 ## Usage
@@ -101,7 +101,7 @@ Yes! Each author can mark their own drafts as complete or incomplete. The status
 ## Upgrade Notice
 
 ### 1.0.0
-Initial release of DraftStatusIndexer.
+Initial release of Draft Status.
 
 ## Support
 
@@ -120,7 +120,7 @@ Developed with ❤️ for the WordPress community.
 This plugin is licensed under the GPL v2 or later.
 
 ```
-DraftStatusIndexer
+Draft Status
 Copyright (C) 2025
 
 This program is free software; you can redistribute it and/or modify

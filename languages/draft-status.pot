@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Draft Status Indexer 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/DraftStatusIndexer\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/draft-status\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,55 +12,55 @@ msgstr ""
 "POT-Creation-Date: 2025-12-06T13:24:15+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: draft-status-indexer\n"
+"X-Domain: draft-status\n"
 
 #. Plugin Name of the plugin
-#: draft-status-indexer.php
+#: draft-status.php
 msgid "Draft Status Indexer"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: draft-status-indexer.php
+#: draft-status.php
 msgid "https://github.com/yourusername/draft-status-indexer"
 msgstr ""
 
 #. Description of the plugin
-#: draft-status-indexer.php
+#: draft-status.php
 msgid "Sort draft posts by completion status (complete/incomplete)"
 msgstr ""
 
 #. Author of the plugin
-#: draft-status-indexer.php
+#: draft-status.php
 msgid "Latz"
 msgstr ""
 
 #. Author URI of the plugin
-#: draft-status-indexer.php
+#: draft-status.php
 msgid "https://elektroelch.de"
 msgstr ""
 
-#: draft-status-indexer.php:96
+#: draft-status.php:96
 msgid "Writing Status"
 msgstr ""
 
-#: draft-status-indexer.php:119
-#: draft-status-indexer.php:220
+#: draft-status.php:119
+#: draft-status.php:220
 msgid "Published"
 msgstr ""
 
-#: draft-status-indexer.php:129
-#: draft-status-indexer.php:230
+#: draft-status.php:129
+#: draft-status.php:230
 msgid "Complete"
 msgstr ""
 
-#: draft-status-indexer.php:135
+#: draft-status.php:135
 msgid "Incomplete"
 msgstr ""
 
-#: draft-status-indexer.php:191
+#: draft-status.php:191
 msgid "Completion Status"
 msgstr ""
 
-#: draft-status-indexer.php:234
+#: draft-status.php:234
 msgid "Check this box when you've finished writing this draft. This helps you sort and track your writing progress."
 msgstr ""
