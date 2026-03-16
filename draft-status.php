@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name: Draft Status Indexer
- * Plugin URI: https://github.com/yourusername/draft-status-indexer
+ * Plugin Name: Draft Status
+ * Plugin URI: https://github.com/yourusername/draft-status
  * Description: Mark draft posts by completion status (complete/incomplete) with priority levels
  * Version: 1.4.0
  * Author: Latz
  * Author URI: https://elektroelch.de
  * * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: draft-status-indexer
+ * Text Domain: draft-status
  * Domain Path: /languages
  */
 
@@ -26,7 +26,7 @@ if (!defined('ABSPATH')) {
  *
  * @since 1.0.0
  */
-class DraftStatusIndexer {
+class DraftStatus {
 
     /**
      * Constructor - Initialize the plugin
@@ -92,10 +92,10 @@ class DraftStatusIndexer {
      */
     private function get_priority_labels() {
         return array(
-            'low' => __('Low', 'draft-status-indexer'),
-            'medium' => __('Medium', 'draft-status-indexer'),
-            'high' => __('High', 'draft-status-indexer'),
-            'urgent' => __('Urgent', 'draft-status-indexer')
+            'low' => __('Low', 'draft-status'),
+            'medium' => __('Medium', 'draft-status'),
+            'high' => __('High', 'draft-status'),
+            'urgent' => __('Urgent', 'draft-status')
         );
     }
 
@@ -127,14 +127,14 @@ class DraftStatusIndexer {
         if ($is_complete === 'yes') {
             printf(
                 '<span class="draft-status-indicator draft-status-complete" role="status" aria-label="%s">✓ %s</span>',
-                esc_attr__('Draft completion status: Complete', 'draft-status-indexer'),
-                esc_html__('Complete', 'draft-status-indexer')
+                esc_attr__('Draft completion status: Complete', 'draft-status'),
+                esc_html__('Complete', 'draft-status')
             );
         } else {
             printf(
                 '<span class="draft-status-indicator draft-status-incomplete" role="status" aria-label="%s">✗ %s</span>',
-                esc_attr__('Draft completion status: Incomplete', 'draft-status-indexer'),
-                esc_html__('Incomplete', 'draft-status-indexer')
+                esc_attr__('Draft completion status: Incomplete', 'draft-status'),
+                esc_html__('Incomplete', 'draft-status')
             );
         }
     }
@@ -160,24 +160,24 @@ class DraftStatusIndexer {
             // Overdue
             $date_class .= ' draft-due-overdue';
             $date_label = sprintf(
-                esc_html__('Overdue: %s', 'draft-status-indexer'),
+                esc_html__('Overdue: %s', 'draft-status'),
                 date_i18n(get_option('date_format'), $due_timestamp)
             );
         } elseif ($days_diff === 0) {
             // Due today
             $date_class .= ' draft-due-today';
-            $date_label = esc_html__('Due today', 'draft-status-indexer');
+            $date_label = esc_html__('Due today', 'draft-status');
         } elseif ($days_diff <= 3) {
             // Due soon (within 3 days)
             $date_class .= ' draft-due-soon';
             $date_label = sprintf(
-                esc_html__('Due: %s', 'draft-status-indexer'),
+                esc_html__('Due: %s', 'draft-status'),
                 date_i18n(get_option('date_format'), $due_timestamp)
             );
         } else {
             // Due later
             $date_label = sprintf(
-                esc_html__('Due: %s', 'draft-status-indexer'),
+                esc_html__('Due: %s', 'draft-status'),
                 date_i18n(get_option('date_format'), $due_timestamp)
             );
         }
@@ -235,10 +235,10 @@ class DraftStatusIndexer {
     }
 
     /**
-     * Enqueue admin stylesheets
+     * Enqueue admin stylesheets and scripts
      *
-     * Loads the plugin's CSS file only on relevant admin pages to improve performance.
-     * The CSS is loaded on posts list, post editor, and dashboard pages.
+     * Loads the plugin's CSS and JS files only on relevant admin pages to improve performance.
+     * The assets are loaded on posts list, post editor, and dashboard pages.
      *
      * @since 1.0.0
      * @param string $hook The current admin page hook.
@@ -252,11 +252,22 @@ class DraftStatusIndexer {
 
         // Enqueue the plugin stylesheet with versioning for cache busting
         wp_enqueue_style(
-            'draft-status-indexer',                      // Handle
-            plugin_dir_url(__FILE__) . 'draft-status-indexer.css', // Source
+            'draft-status',                      // Handle
+            plugin_dir_url(__FILE__) . 'draft-status.css', // Source
             array(),                                      // Dependencies
-            '1.4.0'                                      // Version
+            '1.5.0'                                      // Version
         );
+
+        // Enqueue the plugin JavaScript for post editor pages
+        if ($hook === 'post.php' || $hook === 'post-new.php') {
+            wp_enqueue_script(
+                'draft-status',                      // Handle
+                plugin_dir_url(__FILE__) . 'draft-status.js', // Source
+                array(),                                      // Dependencies
+                '1.5.0',                                     // Version
+                true                                          // Load in footer
+            );
+        }
     }
 
     /**
@@ -270,7 +281,7 @@ class DraftStatusIndexer {
      */
     public function add_completion_column($columns) {
         // Add the "Writing Status" column to the posts list
-        $columns['draft_completion'] = __('Writing Status', 'draft-status-indexer');
+        $columns['draft_completion'] = __('Writing Status', 'draft-status');
         return $columns;
     }
 
@@ -278,15 +289,25 @@ class DraftStatusIndexer {
      * Display column content
      *
      * Outputs the status indicator (Complete/Incomplete) for draft posts with due date.
-     * Complete drafts show green, incomplete show red. Published posts show nothing.
+     * Complete drafts show green, incomplete show red. Published posts show blue.
      *
      * @since 1.0.0
      * @param string $column The column identifier.
      * @param int    $post_id The post ID for the current row.
      */
     public function display_completion_column($column, $post_id) {
-        // Only process our custom column for draft posts
-        if ($column !== 'draft_completion' || get_post_status($post_id) === 'publish') {
+        // Only process our custom column
+        if ($column !== 'draft_completion') {
+            return;
+        }
+
+        // Check if post is published
+        if (get_post_status($post_id) === 'publish') {
+            printf(
+                '<span class="draft-status-indicator draft-status-published" role="status" aria-label="%s">● %s</span>',
+                esc_attr__('Post status: Published', 'draft-status'),
+                esc_html__('Published', 'draft-status')
+            );
             return;
         }
 
@@ -450,7 +471,7 @@ class DraftStatusIndexer {
     public function add_completion_meta_box() {
         add_meta_box(
             'draft_completion_box',                          // Meta box ID
-            __('Completion Status', 'draft-status-indexer'), // Title
+            __('Completion Status', 'draft-status'), // Title
             array($this, 'render_completion_meta_box'),      // Callback function
             'post',                                           // Post type
             'side',                                           // Context (sidebar)
@@ -472,70 +493,81 @@ class DraftStatusIndexer {
         // Get the current post status
         $post_status = get_post_status($post->ID);
 
-        // Only show for draft posts
-        if ($post_status !== 'publish') {
-            // Add nonce field for security verification
-            wp_nonce_field('draft_completion_nonce', 'draft_completion_nonce_field');
-
-            // Draft posts - show completion checkbox
-            $is_complete = get_post_meta($post->ID, '_draft_complete', true);
-            $due_date = get_post_meta($post->ID, '_draft_due_date', true);
+        // Show published status for published posts
+        if ($post_status === 'publish') {
             ?>
-            <p>
-                <label for="draft_complete_checkbox">
-                    <input type="checkbox" id="draft_complete_checkbox" name="draft_complete" value="yes" aria-describedby="draft_complete_description" <?php checked($is_complete, 'yes'); ?>>
-                    <?php esc_html_e('Complete', 'draft-status-indexer'); ?>
-                </label>
-            </p>
-            <p class="description" id="draft_complete_description">
-                <?php esc_html_e('Check when you\'ve finished writing this draft. This helps you sort and track your writing progress.', 'draft-status-indexer'); ?>
-            </p>
-
-            <hr style="margin: 15px 0;">
-
-            <p>
-                <label for="draft_due_date">
-                    <strong><?php esc_html_e('Due Date', 'draft-status-indexer'); ?></strong>
-                </label>
-            </p>
-            <p>
-                <input type="date"
-                       id="draft_due_date"
-                       name="draft_due_date"
-                       value="<?php echo esc_attr($due_date); ?>"
-                       style="width: 100%;">
+            <p class="draft-status-metabox-published">
+                <span class="draft-status-indicator draft-status-published" role="status">● <?php esc_html_e('Published', 'draft-status'); ?></span>
             </p>
             <p class="description">
-                <?php esc_html_e('Set a target completion date for this draft.', 'draft-status-indexer'); ?>
-            </p>
-
-            <hr style="margin: 15px 0;">
-
-            <p>
-                <label for="draft_priority">
-                    <strong><?php esc_html_e('Priority', 'draft-status-indexer'); ?></strong>
-                </label>
-            </p>
-            <p>
-                <?php
-                $priority = get_post_meta($post->ID, '_draft_priority', true);
-                if (empty($priority)) {
-                    $priority = 'none'; // Default priority
-                }
-                ?>
-                <select id="draft_priority" name="draft_priority" style="width: 100%;">
-                    <option value="none" <?php selected($priority, 'none'); ?>><?php esc_html_e('None', 'draft-status-indexer'); ?></option>
-                    <option value="low" <?php selected($priority, 'low'); ?>><?php esc_html_e('Low', 'draft-status-indexer'); ?></option>
-                    <option value="medium" <?php selected($priority, 'medium'); ?>><?php esc_html_e('Medium', 'draft-status-indexer'); ?></option>
-                    <option value="high" <?php selected($priority, 'high'); ?>><?php esc_html_e('High', 'draft-status-indexer'); ?></option>
-                    <option value="urgent" <?php selected($priority, 'urgent'); ?>><?php esc_html_e('Urgent', 'draft-status-indexer'); ?></option>
-                </select>
-            </p>
-            <p class="description">
-                <?php esc_html_e('Set the priority level for this draft.', 'draft-status-indexer'); ?>
+                <?php esc_html_e('This post has been published.', 'draft-status'); ?>
             </p>
             <?php
+            return;
         }
+
+        // Add nonce field for security verification
+        wp_nonce_field('draft_completion_nonce', 'draft_completion_nonce_field');
+
+        // Draft posts - show completion button
+        $is_complete = get_post_meta($post->ID, '_draft_complete', true);
+        $due_date = get_post_meta($post->ID, '_draft_due_date', true);
+        ?>
+        <input type="hidden" id="draft_complete_hidden" name="draft_complete" value="<?php echo esc_attr($is_complete === 'yes' ? 'yes' : 'no'); ?>">
+        <p>
+            <button type="button" id="draft_complete_button" class="button button-large draft-complete-toggle <?php echo esc_attr($is_complete === 'yes' ? 'is-complete' : 'is-incomplete'); ?>" aria-describedby="draft_complete_description" aria-pressed="<?php echo esc_attr($is_complete === 'yes' ? 'true' : 'false'); ?>" data-complete-text="<?php echo esc_attr__('Complete', 'draft-status'); ?>" data-incomplete-text="<?php echo esc_attr__('Incomplete', 'draft-status'); ?>">
+                <span class="draft-status-icon"><?php echo $is_complete === 'yes' ? '✓' : '✗'; ?></span>
+                <span class="draft-status-text"><?php echo $is_complete === 'yes' ? esc_html__('Complete', 'draft-status') : esc_html__('Incomplete', 'draft-status'); ?></span>
+            </button>
+        </p>
+        <p class="description" id="draft_complete_description">
+            <?php esc_html_e('Click to toggle the completion status of this draft. This helps you sort and track your writing progress.', 'draft-status'); ?>
+        </p>
+
+        <hr style="margin: 15px 0;">
+
+        <p>
+            <label for="draft_due_date">
+                <strong><?php esc_html_e('Due Date', 'draft-status'); ?></strong>
+            </label>
+        </p>
+        <p>
+            <input type="date"
+                   id="draft_due_date"
+                   name="draft_due_date"
+                   value="<?php echo esc_attr($due_date); ?>"
+                   style="width: 100%;">
+        </p>
+        <p class="description">
+            <?php esc_html_e('Set a target completion date for this draft.', 'draft-status'); ?>
+        </p>
+
+        <hr style="margin: 15px 0;">
+
+        <p>
+            <label for="draft_priority">
+                <strong><?php esc_html_e('Priority', 'draft-status'); ?></strong>
+            </label>
+        </p>
+        <p>
+            <?php
+            $priority = get_post_meta($post->ID, '_draft_priority', true);
+            if (empty($priority)) {
+                $priority = 'none'; // Default priority
+            }
+            ?>
+            <select id="draft_priority" name="draft_priority" style="width: 100%;">
+                <option value="none" <?php selected($priority, 'none'); ?>><?php esc_html_e('None', 'draft-status'); ?></option>
+                <option value="low" <?php selected($priority, 'low'); ?>><?php esc_html_e('Low', 'draft-status'); ?></option>
+                <option value="medium" <?php selected($priority, 'medium'); ?>><?php esc_html_e('Medium', 'draft-status'); ?></option>
+                <option value="high" <?php selected($priority, 'high'); ?>><?php esc_html_e('High', 'draft-status'); ?></option>
+                <option value="urgent" <?php selected($priority, 'urgent'); ?>><?php esc_html_e('Urgent', 'draft-status'); ?></option>
+            </select>
+        </p>
+        <p class="description">
+            <?php esc_html_e('Set the priority level for this draft.', 'draft-status'); ?>
+        </p>
+        <?php
     }
 
     /**
@@ -627,10 +659,10 @@ class DraftStatusIndexer {
         $selected = isset($_GET['draft_completion_filter']) ? sanitize_text_field(wp_unslash($_GET['draft_completion_filter'])) : '';
 
         ?>
-        <select name="draft_completion_filter" id="draft_completion_filter" aria-label="<?php esc_attr_e('Filter posts by completion status', 'draft-status-indexer'); ?>">
-            <option value=""><?php esc_html_e('All Completion Status', 'draft-status-indexer'); ?></option>
-            <option value="complete" <?php selected($selected, 'complete'); ?>><?php esc_html_e('Complete', 'draft-status-indexer'); ?></option>
-            <option value="incomplete" <?php selected($selected, 'incomplete'); ?>><?php esc_html_e('Incomplete', 'draft-status-indexer'); ?></option>
+        <select name="draft_completion_filter" id="draft_completion_filter" aria-label="<?php esc_attr_e('Filter posts by completion status', 'draft-status'); ?>">
+            <option value=""><?php esc_html_e('All Completion Status', 'draft-status'); ?></option>
+            <option value="complete" <?php selected($selected, 'complete'); ?>><?php esc_html_e('Complete', 'draft-status'); ?></option>
+            <option value="incomplete" <?php selected($selected, 'incomplete'); ?>><?php esc_html_e('Incomplete', 'draft-status'); ?></option>
         </select>
 
         <?php
@@ -638,12 +670,12 @@ class DraftStatusIndexer {
         $priority_selected = isset($_GET['draft_priority_filter']) ? sanitize_text_field(wp_unslash($_GET['draft_priority_filter'])) : '';
         ?>
         <select name="draft_priority_filter">
-            <option value=""><?php esc_html_e('All Priorities', 'draft-status-indexer'); ?></option>
-            <option value="urgent" <?php selected($priority_selected, 'urgent'); ?>><?php esc_html_e('Urgent', 'draft-status-indexer'); ?></option>
-            <option value="high" <?php selected($priority_selected, 'high'); ?>><?php esc_html_e('High', 'draft-status-indexer'); ?></option>
-            <option value="medium" <?php selected($priority_selected, 'medium'); ?>><?php esc_html_e('Medium', 'draft-status-indexer'); ?></option>
-            <option value="low" <?php selected($priority_selected, 'low'); ?>><?php esc_html_e('Low', 'draft-status-indexer'); ?></option>
-            <option value="none" <?php selected($priority_selected, 'none'); ?>><?php esc_html_e('None', 'draft-status-indexer'); ?></option>
+            <option value=""><?php esc_html_e('All Priorities', 'draft-status'); ?></option>
+            <option value="urgent" <?php selected($priority_selected, 'urgent'); ?>><?php esc_html_e('Urgent', 'draft-status'); ?></option>
+            <option value="high" <?php selected($priority_selected, 'high'); ?>><?php esc_html_e('High', 'draft-status'); ?></option>
+            <option value="medium" <?php selected($priority_selected, 'medium'); ?>><?php esc_html_e('Medium', 'draft-status'); ?></option>
+            <option value="low" <?php selected($priority_selected, 'low'); ?>><?php esc_html_e('Low', 'draft-status'); ?></option>
+            <option value="none" <?php selected($priority_selected, 'none'); ?>><?php esc_html_e('None', 'draft-status'); ?></option>
         </select>
         <?php
     }
@@ -735,7 +767,7 @@ class DraftStatusIndexer {
     public function add_dashboard_widget() {
         wp_add_dashboard_widget(
             'draft_status_widget',                           // Widget ID
-            __('Draft Writing Status', 'draft-status-indexer'), // Widget title
+            __('Draft Writing Status', 'draft-status'), // Widget title
             array($this, 'render_dashboard_widget')          // Callback function
         );
     }
@@ -797,7 +829,7 @@ class DraftStatusIndexer {
                         <span class="draft-status-indicator draft-status-incomplete" aria-hidden="true">✗</span>
                         <?php
                         printf(
-                            esc_html__('Incomplete Drafts (%d)', 'draft-status-indexer'),
+                            esc_html__('Incomplete Drafts (%d)', 'draft-status'),
                             $incomplete_query->found_posts
                         );
                         ?>
@@ -808,7 +840,7 @@ class DraftStatusIndexer {
                             $priority = get_post_meta(get_the_ID(), '_draft_priority', true);
                         ?>
                             <li class="draft-status-item">
-                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link" aria-label="<?php echo esc_attr(sprintf(__('Edit incomplete draft: %s, last modified %s', 'draft-status-indexer'), get_the_title(), get_the_modified_date())); ?>">
+                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link" aria-label="<?php echo esc_attr(sprintf(__('Edit incomplete draft: %s, last modified %s', 'draft-status'), get_the_title(), get_the_modified_date())); ?>">
                                     <div class="draft-status-title">
                                         <?php if (!empty($priority) && $priority !== 'none'): ?>
                                             <?php
@@ -826,7 +858,7 @@ class DraftStatusIndexer {
                                     <div class="draft-status-meta">
                                         <?php
                                         printf(
-                                            esc_html__('Modified: %s', 'draft-status-indexer'),
+                                            esc_html__('Modified: %s', 'draft-status'),
                                             get_the_modified_date()
                                         );
 
@@ -842,26 +874,26 @@ class DraftStatusIndexer {
                                                 printf(
                                                     '<span class="draft-due-overdue">%s</span>',
                                                     sprintf(
-                                                        esc_html__('Overdue: %s', 'draft-status-indexer'),
+                                                        esc_html__('Overdue: %s', 'draft-status'),
                                                         date_i18n(get_option('date_format'), $due_timestamp)
                                                     )
                                                 );
                                             } elseif ($days_diff === 0) {
                                                 printf(
                                                     '<span class="draft-due-today">%s</span>',
-                                                    esc_html__('Due today', 'draft-status-indexer')
+                                                    esc_html__('Due today', 'draft-status')
                                                 );
                                             } elseif ($days_diff <= 3) {
                                                 printf(
                                                     '<span class="draft-due-soon">%s</span>',
                                                     sprintf(
-                                                        esc_html__('Due: %s', 'draft-status-indexer'),
+                                                        esc_html__('Due: %s', 'draft-status'),
                                                         date_i18n(get_option('date_format'), $due_timestamp)
                                                     )
                                                 );
                                             } else {
                                                 printf(
-                                                    esc_html__('Due: %s', 'draft-status-indexer'),
+                                                    esc_html__('Due: %s', 'draft-status'),
                                                     date_i18n(get_option('date_format'), $due_timestamp)
                                                 );
                                             }
@@ -881,7 +913,7 @@ class DraftStatusIndexer {
                         <span class="draft-status-indicator draft-status-complete" aria-hidden="true">✓</span>
                         <?php
                         printf(
-                            esc_html__('Complete Drafts Ready for Review (%d)', 'draft-status-indexer'),
+                            esc_html__('Complete Drafts Ready for Review (%d)', 'draft-status'),
                             $complete_query->found_posts
                         );
                         ?>
@@ -892,7 +924,7 @@ class DraftStatusIndexer {
                             $priority = get_post_meta(get_the_ID(), '_draft_priority', true);
                         ?>
                             <li class="draft-status-item">
-                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link" aria-label="<?php echo esc_attr(sprintf(__('Edit complete draft: %s, last modified %s', 'draft-status-indexer'), get_the_title(), get_the_modified_date())); ?>">
+                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link" aria-label="<?php echo esc_attr(sprintf(__('Edit complete draft: %s, last modified %s', 'draft-status'), get_the_title(), get_the_modified_date())); ?>">
                                     <div class="draft-status-title">
                                         <?php if (!empty($priority) && $priority !== 'none'): ?>
                                             <?php
@@ -910,7 +942,7 @@ class DraftStatusIndexer {
                                     <div class="draft-status-meta">
                                         <?php
                                         printf(
-                                            esc_html__('Modified: %s', 'draft-status-indexer'),
+                                            esc_html__('Modified: %s', 'draft-status'),
                                             get_the_modified_date()
                                         );
 
@@ -918,7 +950,7 @@ class DraftStatusIndexer {
                                         if (!empty($due_date)) {
                                             echo ' • ';
                                             printf(
-                                                esc_html__('Due: %s', 'draft-status-indexer'),
+                                                esc_html__('Due: %s', 'draft-status'),
                                                 date_i18n(get_option('date_format'), strtotime($due_date))
                                             );
                                         }
@@ -932,12 +964,12 @@ class DraftStatusIndexer {
             <?php endif; ?>
 
             <?php if (!$incomplete_query->have_posts() && !$complete_query->have_posts()): ?>
-                <output><?php esc_html_e('No drafts found. Start writing!', 'draft-status-indexer'); ?></output>
+                <output><?php esc_html_e('No drafts found. Start writing!', 'draft-status'); ?></output>
             <?php endif; ?>
 
             <p class="draft-status-link">
-                <a href="<?php echo esc_url(admin_url('edit.php?post_status=draft&post_type=post')); ?>" aria-label="<?php esc_attr_e('View all draft posts in the posts list', 'draft-status-indexer'); ?>">
-                    <?php esc_html_e('View All Drafts →', 'draft-status-indexer'); ?>
+                <a href="<?php echo esc_url(admin_url('edit.php?post_status=draft&post_type=post')); ?>" aria-label="<?php esc_attr_e('View all draft posts in the posts list', 'draft-status'); ?>">
+                    <?php esc_html_e('View All Drafts →', 'draft-status'); ?>
                 </a>
             </p>
         </div>
@@ -959,7 +991,7 @@ class DraftStatusIndexer {
         // Register completion status field
         register_post_meta('post', '_draft_complete', array(
             'type' => 'string',
-            'description' => __('Draft completion status', 'draft-status-indexer'),
+            'description' => __('Draft completion status', 'draft-status'),
             'single' => true,
             'show_in_rest' => true,
             'default' => 'no',
@@ -976,7 +1008,7 @@ class DraftStatusIndexer {
         // Register due date field
         register_post_meta('post', '_draft_due_date', array(
             'type' => 'string',
-            'description' => __('Draft due date', 'draft-status-indexer'),
+            'description' => __('Draft due date', 'draft-status'),
             'single' => true,
             'show_in_rest' => true,
             'default' => '',
@@ -996,7 +1028,7 @@ class DraftStatusIndexer {
         // Register priority field
         register_post_meta('post', '_draft_priority', array(
             'type' => 'string',
-            'description' => __('Draft priority level', 'draft-status-indexer'),
+            'description' => __('Draft priority level', 'draft-status'),
             'single' => true,
             'show_in_rest' => true,
             'default' => 'none',
@@ -1012,9 +1044,9 @@ class DraftStatusIndexer {
 /**
  * Initialize the plugin
  *
- * Creates a new instance of the DraftStatusIndexer class.
+ * Creates a new instance of the DraftStatus class.
  * This is executed immediately when the plugin file is loaded.
  *
  * @since 1.0.0
  */
-new DraftStatusIndexer();
+new DraftStatus();
