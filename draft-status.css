@@ -308,7 +308,7 @@
  */
 .draft-priority-urgent {
     background: #fff0f0;
-    color: #d63638;
+    color: #b91c1c;
     border: 1px solid #f0d0d0;
 }
 
@@ -319,7 +319,7 @@
  */
 .draft-priority-high {
     background: #fff8f0;
-    color: #cc6d2e;
+    color: #9a4a1a;
     border: 1px solid #f5e0cc;
 }
 
@@ -341,7 +341,7 @@
  */
 .draft-priority-low {
     background: #f6faf7;
-    color: #6ba46c;
+    color: #2d7a2e;
     border: 1px solid #e0f0e0;
 }
 
@@ -430,8 +430,8 @@
  */
 .draft-complete-toggle.is-complete {
     background: #fff;
-    border-color: #46b450;
-    color: #46b450;
+    border-color: #1e7a24;
+    color: #1e7a24;
 }
 
 .draft-complete-toggle.is-complete:hover {

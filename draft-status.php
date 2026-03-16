@@ -37,37 +37,37 @@ class DraftStatus {
      */
     public function __construct() {
         // Enqueue admin styles - loads CSS only on relevant admin pages
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueueAdminStyles'));
 
         // Add custom column to posts list - adds "Writing Status" column header
-        add_filter('manage_posts_columns', array($this, 'add_completion_column'));
+        add_filter('manage_posts_columns', array($this, 'addCompletionColumn'));
 
         // Display column content - shows status indicators in the column
-        add_action('manage_posts_custom_column', array($this, 'display_completion_column'), 10, 2);
+        add_action('manage_posts_custom_column', array($this, 'displayCompletionColumn'), 10, 2);
 
         // Make column sortable - allows clicking column header to sort
-        add_filter('manage_edit-post_sortable_columns', array($this, 'make_completion_sortable'));
+        add_filter('manage_edit-post_sortable_columns', array($this, 'makeCompletionSortable'));
 
         // Handle sorting logic - processes the sort request
-        add_action('pre_get_posts', array($this, 'sort_by_completion'));
+        add_action('pre_get_posts', array($this, 'sortByCompletion'));
 
         // Add meta box to edit screen - adds completion checkbox to post editor
-        add_action('add_meta_boxes', array($this, 'add_completion_meta_box'));
+        add_action('add_meta_boxes', array($this, 'addCompletionMetaBox'));
 
         // Save completion status - saves checkbox value when post is saved
-        add_action('save_post', array($this, 'save_completion_status'));
+        add_action('save_post', array($this, 'saveCompletionStatus'));
 
         // Add filter dropdown to posts list
-        add_action('restrict_manage_posts', array($this, 'add_completion_filter_dropdown'));
+        add_action('restrict_manage_posts', array($this, 'addCompletionFilterDropdown'));
 
         // Handle filter query
-        add_filter('parse_query', array($this, 'filter_posts_by_completion'));
+        add_filter('parse_query', array($this, 'filterPostsByCompletion'));
 
         // Add dashboard widget
-        add_action('wp_dashboard_setup', array($this, 'add_dashboard_widget'));
+        add_action('wp_dashboard_setup', array($this, 'addDashboardWidget'));
 
         // Register meta field for REST API support
-        add_action('init', array($this, 'register_meta_field'));
+        add_action('init', array($this, 'registerMetaField'));
     }
 
     /**
@@ -78,7 +78,7 @@ class DraftStatus {
      * @since 1.4.0
      * @return array Valid priority values.
      */
-    private function get_valid_priorities() {
+    private function getValidPriorities() {
         return array('none', 'low', 'medium', 'high', 'urgent');
     }
 
@@ -90,7 +90,7 @@ class DraftStatus {
      * @since 1.4.0
      * @return array Priority labels with keys as priority values and values as translated labels.
      */
-    private function get_priority_labels() {
+    private function getPriorityLabels() {
         return array(
             'low' => __('Low', 'draft-status'),
             'medium' => __('Medium', 'draft-status'),
@@ -108,8 +108,8 @@ class DraftStatus {
      * @param string $value The priority value to sanitize.
      * @return string Sanitized priority value.
      */
-    public function sanitize_priority_value($value) {
-        if (in_array($value, $this->get_valid_priorities(), true)) {
+    public function sanitizePriorityValue($value) {
+        if (in_array($value, $this->getValidPriorities(), true)) {
             return $value;
         }
         return 'none';
@@ -123,16 +123,16 @@ class DraftStatus {
      * @since 1.4.0
      * @param string $is_complete The completion status ('yes' or 'no').
      */
-    private function render_completion_status($is_complete) {
+    private function renderCompletionStatus($is_complete) {
         if ($is_complete === 'yes') {
             printf(
-                '<span class="draft-status-indicator draft-status-complete" role="status" aria-label="%s">✓ %s</span>',
+                '<span class="draft-status-indicator draft-status-complete" aria-label="%s">✓ %s</span>',
                 esc_attr__('Draft completion status: Complete', 'draft-status'),
                 esc_html__('Complete', 'draft-status')
             );
         } else {
             printf(
-                '<span class="draft-status-indicator draft-status-incomplete" role="status" aria-label="%s">✗ %s</span>',
+                '<span class="draft-status-indicator draft-status-incomplete" aria-label="%s">✗ %s</span>',
                 esc_attr__('Draft completion status: Incomplete', 'draft-status'),
                 esc_html__('Incomplete', 'draft-status')
             );
@@ -148,7 +148,7 @@ class DraftStatus {
      * @param string $due_date The due date in Y-m-d format.
      * @return array Array with 'class' and 'label' keys.
      */
-    private function get_due_date_display($due_date) {
+    private function getDueDateDisplay($due_date) {
         $due_timestamp = strtotime($due_date);
         $today = strtotime('today');
         $days_diff = floor(($due_timestamp - $today) / (60 * 60 * 24));
@@ -196,12 +196,12 @@ class DraftStatus {
      * @since 1.4.0
      * @param string $due_date The due date in Y-m-d format.
      */
-    private function render_due_date($due_date) {
+    private function renderDueDate($due_date) {
         if (empty($due_date)) {
             return;
         }
 
-        $display = $this->get_due_date_display($due_date);
+        $display = $this->getDueDateDisplay($due_date);
         printf(
             '<br><span class="%s">%s</span>',
             esc_attr($display['class']),
@@ -217,12 +217,12 @@ class DraftStatus {
      * @since 1.4.0
      * @param string $priority The priority value.
      */
-    private function render_priority_badge($priority) {
+    private function renderPriorityBadge($priority) {
         if (empty($priority) || $priority === 'none') {
             return;
         }
 
-        $priority_labels = $this->get_priority_labels();
+        $priority_labels = $this->getPriorityLabels();
         $priority_label = isset($priority_labels[$priority]) ? $priority_labels[$priority] : '';
 
         if (!empty($priority_label)) {
@@ -243,7 +243,7 @@ class DraftStatus {
      * @since 1.0.0
      * @param string $hook The current admin page hook.
      */
-    public function enqueue_admin_styles($hook) {
+    public function enqueueAdminStyles($hook) {
         // Only load on relevant pages: edit.php (posts list), post.php (edit post),
         // post-new.php (new post), and index.php (dashboard)
         if ($hook !== 'edit.php' && $hook !== 'post.php' && $hook !== 'post-new.php' && $hook !== 'index.php') {
@@ -279,7 +279,7 @@ class DraftStatus {
      * @param array $columns Existing columns in the posts list table.
      * @return array Modified columns array with the new column added.
      */
-    public function add_completion_column($columns) {
+    public function addCompletionColumn($columns) {
         // Add the "Writing Status" column to the posts list
         $columns['draft_completion'] = __('Writing Status', 'draft-status');
         return $columns;
@@ -295,7 +295,7 @@ class DraftStatus {
      * @param string $column The column identifier.
      * @param int    $post_id The post ID for the current row.
      */
-    public function display_completion_column($column, $post_id) {
+    public function displayCompletionColumn($column, $post_id) {
         // Only process our custom column
         if ($column !== 'draft_completion') {
             return;
@@ -317,13 +317,13 @@ class DraftStatus {
         $priority = get_post_meta($post_id, '_draft_priority', true);
 
         // Render completion status
-        $this->render_completion_status($is_complete);
+        $this->renderCompletionStatus($is_complete);
 
         // Render due date
-        $this->render_due_date($due_date);
+        $this->renderDueDate($due_date);
 
         // Render priority badge
-        $this->render_priority_badge($priority);
+        $this->renderPriorityBadge($priority);
     }
 
     /**
@@ -336,7 +336,7 @@ class DraftStatus {
      * @param array $columns Existing sortable columns.
      * @return array Modified sortable columns array.
      */
-    public function make_completion_sortable($columns) {
+    public function makeCompletionSortable($columns) {
         // Register the draft_completion column as sortable
         $columns['draft_completion'] = 'draft_completion';
         return $columns;
@@ -352,7 +352,7 @@ class DraftStatus {
      * @since 1.0.0
      * @param WP_Query $query The WordPress query object.
      */
-    public function sort_by_completion($query) {
+    public function sortByCompletion($query) {
         global $wpdb;
 
         // Only modify admin queries on the main query
@@ -382,7 +382,7 @@ class DraftStatus {
             ));
 
             // Use filter to modify the orderby clause for proper priority ordering
-            add_filter('posts_orderby', array($this, 'custom_priority_orderby'), 10, 2);
+            add_filter('posts_orderby', array($this, 'customPriorityOrderby'), 10, 2);
         }
     }
 
@@ -396,7 +396,7 @@ class DraftStatus {
      * @param WP_Query $query The WordPress query object.
      * @return string Modified ORDER BY clause.
      */
-    public function custom_priority_orderby($orderby, $query) {
+    public function customPriorityOrderby($orderby, $query) {
         global $wpdb;
 
         if (!is_admin() || !$query->is_main_query() || $query->get('orderby') !== 'draft_completion') {
@@ -421,7 +421,7 @@ class DraftStatus {
         ";
 
         // Remove this filter to prevent it from affecting other queries
-        remove_filter('posts_orderby', array($this, 'custom_priority_orderby'), 10);
+        remove_filter('posts_orderby', array($this, 'customPriorityOrderby'), 10);
 
         return $orderby;
     }
@@ -436,7 +436,7 @@ class DraftStatus {
      * @param WP_Query $query The WordPress query object.
      * @return string Modified ORDER BY clause.
      */
-    public function dashboard_widget_orderby($orderby, $query) {
+    public function dashboardWidgetOrderby($orderby, $query) {
         global $wpdb;
 
         // Only apply to our dashboard widget queries
@@ -445,7 +445,7 @@ class DraftStatus {
         }
 
         // Sort by priority (urgent first), then by modified date (newest first)
-        $orderby = "
+        return "
             CASE (SELECT meta_value FROM {$wpdb->postmeta} WHERE {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID AND meta_key = '_draft_priority' LIMIT 1)
                 WHEN 'urgent' THEN 1
                 WHEN 'high' THEN 2
@@ -456,8 +456,6 @@ class DraftStatus {
             END ASC,
             {$wpdb->posts}.post_modified DESC
         ";
-
-        return $orderby;
     }
 
     /**
@@ -468,11 +466,11 @@ class DraftStatus {
      *
      * @since 1.0.0
      */
-    public function add_completion_meta_box() {
+    public function addCompletionMetaBox() {
         add_meta_box(
             'draft_completion_box',                          // Meta box ID
             __('Completion Status', 'draft-status'), // Title
-            array($this, 'render_completion_meta_box'),      // Callback function
+            array($this, 'renderCompletionMetaBox'),      // Callback function
             'post',                                           // Post type
             'side',                                           // Context (sidebar)
             'default'                                            // Priority
@@ -489,7 +487,7 @@ class DraftStatus {
      * @since 1.0.0
      * @param WP_Post $post The current post object.
      */
-    public function render_completion_meta_box($post) {
+    public function renderCompletionMetaBox($post) {
         // Get the current post status
         $post_status = get_post_status($post->ID);
 
@@ -497,7 +495,7 @@ class DraftStatus {
         if ($post_status === 'publish') {
             ?>
             <p class="draft-status-metabox-published">
-                <span class="draft-status-indicator draft-status-published" role="status">● <?php esc_html_e('Published', 'draft-status'); ?></span>
+                <span class="draft-status-indicator draft-status-published">● <?php esc_html_e('Published', 'draft-status'); ?></span>
             </p>
             <p class="description">
                 <?php esc_html_e('This post has been published.', 'draft-status'); ?>
@@ -581,7 +579,7 @@ class DraftStatus {
      * @since 1.0.0
      * @param int $post_id The post ID being saved.
      */
-    public function save_completion_status($post_id) {
+    public function saveCompletionStatus($post_id) {
         // Security check: Verify nonce to prevent CSRF attacks
         if (!isset($_POST['draft_completion_nonce_field']) ||
             !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['draft_completion_nonce_field'])), 'draft_completion_nonce')) {
@@ -613,6 +611,19 @@ class DraftStatus {
             update_post_meta($post_id, '_draft_complete', 'no');
         }
 
+        $this->saveDraftDueDate($post_id);
+        $this->saveDraftPriority($post_id);
+    }
+
+    /**
+     * Save draft due date from POST data
+     *
+     * Handles validation and storage of the due date meta field.
+     *
+     * @since 1.4.0
+     * @param int $post_id The post ID.
+     */
+    private function saveDraftDueDate($post_id) {
         // Save due date
         if (isset($_POST['draft_due_date'])) {
             $due_date = sanitize_text_field(wp_unslash($_POST['draft_due_date']));
@@ -625,13 +636,23 @@ class DraftStatus {
                 delete_post_meta($post_id, '_draft_due_date');
             }
         }
+    }
 
+    /**
+     * Save draft priority from POST data
+     *
+     * Handles validation and storage of the priority meta field.
+     *
+     * @since 1.4.0
+     * @param int $post_id The post ID.
+     */
+    private function saveDraftPriority($post_id) {
         // Save priority
         if (isset($_POST['draft_priority'])) {
             $priority = sanitize_text_field(wp_unslash($_POST['draft_priority']));
 
             // Whitelist validation: Only accept valid priority values
-            if (in_array($priority, $this->get_valid_priorities(), true)) {
+            if (in_array($priority, $this->getValidPriorities(), true)) {
                 update_post_meta($post_id, '_draft_priority', $priority);
             } else {
                 // Default to none if invalid value
@@ -649,7 +670,7 @@ class DraftStatus {
      * @since 1.0.0
      * @param string $post_type The current post type.
      */
-    public function add_completion_filter_dropdown($post_type) {
+    public function addCompletionFilterDropdown($post_type) {
         // Only show on the posts list page
         if ($post_type !== 'post') {
             return;
@@ -689,7 +710,7 @@ class DraftStatus {
      * @since 1.0.0
      * @param WP_Query $query The WordPress query object.
      */
-    public function filter_posts_by_completion($query) {
+    public function filterPostsByCompletion($query) {
         global $pagenow;
 
         // Only modify admin queries on the posts list page
@@ -739,7 +760,7 @@ class DraftStatus {
         if ($has_priority_filter) {
             $priority_filter = sanitize_text_field(wp_unslash($_GET['draft_priority_filter']));
 
-            if (in_array($priority_filter, $this->get_valid_priorities(), true)) {
+            if (in_array($priority_filter, $this->getValidPriorities(), true)) {
                 $meta_query[] = array(
                     'key' => '_draft_priority',
                     'value' => $priority_filter,
@@ -764,11 +785,11 @@ class DraftStatus {
      *
      * @since 1.0.0
      */
-    public function add_dashboard_widget() {
+    public function addDashboardWidget() {
         wp_add_dashboard_widget(
             'draft_status_widget',                           // Widget ID
             __('Draft Writing Status', 'draft-status'), // Widget title
-            array($this, 'render_dashboard_widget')          // Callback function
+            array($this, 'renderDashboardWidget')          // Callback function
         );
     }
 
@@ -780,188 +801,14 @@ class DraftStatus {
      *
      * @since 1.0.0
      */
-    public function render_dashboard_widget() {
-        global $wpdb;
-
-        // Add custom orderby filter for dashboard widget
-        add_filter('posts_orderby', array($this, 'dashboard_widget_orderby'), 10, 2);
-
-        // Query for incomplete drafts
-        $incomplete_query = new WP_Query(array(
-            'post_type' => 'post',
-            'post_status' => 'draft',
-            'meta_query' => array(
-                'relation' => 'OR',
-                array(
-                    'key' => '_draft_complete',
-                    'value' => 'no',
-                    'compare' => '='
-                ),
-                array(
-                    'key' => '_draft_complete',
-                    'compare' => 'NOT EXISTS'
-                )
-            ),
-            'posts_per_page' => -1,
-            'orderby' => 'priority_then_modified',
-            'order' => 'ASC'
-        ));
-
-        // Query for complete drafts
-        $complete_query = new WP_Query(array(
-            'post_type' => 'post',
-            'post_status' => 'draft',
-            'meta_key' => '_draft_complete',
-            'meta_value' => 'yes',
-            'posts_per_page' => -1,
-            'orderby' => 'priority_then_modified',
-            'order' => 'ASC'
-        ));
-
-        // Remove the filter after queries are done
-        remove_filter('posts_orderby', array($this, 'dashboard_widget_orderby'), 10);
+    public function renderDashboardWidget() {
+        // Get the queries
+        list($incomplete_query, $complete_query) = $this->getDashboardQueries();
 
         ?>
         <div class="draft-status-widget">
-            <?php if ($incomplete_query->have_posts()): ?>
-                <section class="draft-status-section" aria-labelledby="draft-status-incomplete-title">
-                    <h4 class="draft-status-section-title" id="draft-status-incomplete-title">
-                        <span class="draft-status-indicator draft-status-incomplete" aria-hidden="true">✗</span>
-                        <?php
-                        printf(
-                            esc_html__('Incomplete Drafts (%d)', 'draft-status'),
-                            $incomplete_query->found_posts
-                        );
-                        ?>
-                    </h4>
-                    <ul class="draft-status-list">
-                        <?php while ($incomplete_query->have_posts()): $incomplete_query->the_post();
-                            $due_date = get_post_meta(get_the_ID(), '_draft_due_date', true);
-                            $priority = get_post_meta(get_the_ID(), '_draft_priority', true);
-                        ?>
-                            <li class="draft-status-item">
-                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link" aria-label="<?php echo esc_attr(sprintf(__('Edit incomplete draft: %s, last modified %s', 'draft-status'), get_the_title(), get_the_modified_date())); ?>">
-                                    <div class="draft-status-title">
-                                        <?php if (!empty($priority) && $priority !== 'none'): ?>
-                                            <?php
-                                            $priority_labels = $this->get_priority_labels();
-                                            $priority_label = isset($priority_labels[$priority]) ? $priority_labels[$priority] : '';
-                                            ?>
-                                            <?php if (!empty($priority_label)): ?>
-                                                <span class="draft-priority draft-priority-<?php echo esc_attr($priority); ?>">
-                                                    <?php echo esc_html($priority_label); ?>
-                                                </span>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
-                                        <?php echo esc_html(get_the_title()); ?>
-                                    </div>
-                                    <div class="draft-status-meta">
-                                        <?php
-                                        printf(
-                                            esc_html__('Modified: %s', 'draft-status'),
-                                            get_the_modified_date()
-                                        );
-
-                                        // Show due date if set
-                                        if (!empty($due_date)) {
-                                            $due_timestamp = strtotime($due_date);
-                                            $today = strtotime('today');
-                                            $days_diff = floor(($due_timestamp - $today) / (60 * 60 * 24));
-
-                                            echo ' • ';
-
-                                            if ($days_diff < 0) {
-                                                printf(
-                                                    '<span class="draft-due-overdue">%s</span>',
-                                                    sprintf(
-                                                        esc_html__('Overdue: %s', 'draft-status'),
-                                                        date_i18n(get_option('date_format'), $due_timestamp)
-                                                    )
-                                                );
-                                            } elseif ($days_diff === 0) {
-                                                printf(
-                                                    '<span class="draft-due-today">%s</span>',
-                                                    esc_html__('Due today', 'draft-status')
-                                                );
-                                            } elseif ($days_diff <= 3) {
-                                                printf(
-                                                    '<span class="draft-due-soon">%s</span>',
-                                                    sprintf(
-                                                        esc_html__('Due: %s', 'draft-status'),
-                                                        date_i18n(get_option('date_format'), $due_timestamp)
-                                                    )
-                                                );
-                                            } else {
-                                                printf(
-                                                    esc_html__('Due: %s', 'draft-status'),
-                                                    date_i18n(get_option('date_format'), $due_timestamp)
-                                                );
-                                            }
-                                        }
-                                        ?>
-                                    </div>
-                                </a>
-                            </li>
-                        <?php endwhile; ?>
-                    </ul>
-                </section>
-            <?php endif; ?>
-
-            <?php if ($complete_query->have_posts()): ?>
-                <section class="draft-status-section" aria-labelledby="draft-status-complete-title">
-                    <h4 class="draft-status-section-title" id="draft-status-complete-title">
-                        <span class="draft-status-indicator draft-status-complete" aria-hidden="true">✓</span>
-                        <?php
-                        printf(
-                            esc_html__('Complete Drafts Ready for Review (%d)', 'draft-status'),
-                            $complete_query->found_posts
-                        );
-                        ?>
-                    </h4>
-                    <ul class="draft-status-list">
-                        <?php while ($complete_query->have_posts()): $complete_query->the_post();
-                            $due_date = get_post_meta(get_the_ID(), '_draft_due_date', true);
-                            $priority = get_post_meta(get_the_ID(), '_draft_priority', true);
-                        ?>
-                            <li class="draft-status-item">
-                                <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link" aria-label="<?php echo esc_attr(sprintf(__('Edit complete draft: %s, last modified %s', 'draft-status'), get_the_title(), get_the_modified_date())); ?>">
-                                    <div class="draft-status-title">
-                                        <?php if (!empty($priority) && $priority !== 'none'): ?>
-                                            <?php
-                                            $priority_labels = $this->get_priority_labels();
-                                            $priority_label = isset($priority_labels[$priority]) ? $priority_labels[$priority] : '';
-                                            ?>
-                                            <?php if (!empty($priority_label)): ?>
-                                                <span class="draft-priority draft-priority-<?php echo esc_attr($priority); ?>">
-                                                    <?php echo esc_html($priority_label); ?>
-                                                </span>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
-                                        <?php echo esc_html(get_the_title()); ?>
-                                    </div>
-                                    <div class="draft-status-meta">
-                                        <?php
-                                        printf(
-                                            esc_html__('Modified: %s', 'draft-status'),
-                                            get_the_modified_date()
-                                        );
-
-                                        // Show due date if set
-                                        if (!empty($due_date)) {
-                                            echo ' • ';
-                                            printf(
-                                                esc_html__('Due: %s', 'draft-status'),
-                                                date_i18n(get_option('date_format'), strtotime($due_date))
-                                            );
-                                        }
-                                        ?>
-                                    </div>
-                                </a>
-                            </li>
-                        <?php endwhile; ?>
-                    </ul>
-                </section>
-            <?php endif; ?>
+            <?php $this->renderDashboardIncompletePosts($incomplete_query); ?>
+            <?php $this->renderDashboardCompletePosts($complete_query); ?>
 
             <?php if (!$incomplete_query->have_posts() && !$complete_query->have_posts()): ?>
                 <output><?php esc_html_e('No drafts found. Start writing!', 'draft-status'); ?></output>
@@ -987,7 +834,7 @@ class DraftStatus {
      *
      * @since 1.2.0
      */
-    public function register_meta_field() {
+    public function registerMetaField() {
         // Register completion status field
         register_post_meta('post', '_draft_complete', array(
             'type' => 'string',
@@ -1032,12 +879,197 @@ class DraftStatus {
             'single' => true,
             'show_in_rest' => true,
             'default' => 'none',
-            'sanitize_callback' => array($this, 'sanitize_priority_value'),
+            'sanitize_callback' => array($this, 'sanitizePriorityValue'),
             'auth_callback' => function() {
                 // Only allow users who can edit posts
                 return current_user_can('edit_posts');
             }
         ));
+    }
+
+    /**
+     * Get dashboard widget queries
+     *
+     * Builds and returns both incomplete and complete draft queries with proper ordering.
+     *
+     * @since 1.4.0
+     * @return array Array of [incomplete_query, complete_query] WP_Query objects.
+     */
+    private function getDashboardQueries() {
+        // Add custom orderby filter for dashboard widget
+        add_filter('posts_orderby', array($this, 'dashboardWidgetOrderby'), 10, 2);
+
+        // Query for incomplete drafts
+        $incomplete_query = new WP_Query(array(
+            'post_type' => 'post',
+            'post_status' => 'draft',
+            'meta_query' => array(
+                'relation' => 'OR',
+                array(
+                    'key' => '_draft_complete',
+                    'value' => 'no',
+                    'compare' => '='
+                ),
+                array(
+                    'key' => '_draft_complete',
+                    'compare' => 'NOT EXISTS'
+                )
+            ),
+            'posts_per_page' => -1,
+            'orderby' => 'priority_then_modified',
+            'order' => 'ASC'
+        ));
+
+        // Query for complete drafts
+        $complete_query = new WP_Query(array(
+            'post_type' => 'post',
+            'post_status' => 'draft',
+            'meta_key' => '_draft_complete',
+            'meta_value' => 'yes',
+            'posts_per_page' => -1,
+            'orderby' => 'priority_then_modified',
+            'order' => 'ASC'
+        ));
+
+        // Remove the filter after queries are done
+        remove_filter('posts_orderby', array($this, 'dashboardWidgetOrderby'), 10);
+
+        return array($incomplete_query, $complete_query);
+    }
+
+    /**
+     * Render incomplete drafts section
+     *
+     * Displays the incomplete drafts list with priority badges and due date information.
+     *
+     * @since 1.4.0
+     * @param WP_Query $query The incomplete drafts query object.
+     */
+    private function renderDashboardIncompletePosts($query) {
+        if (!$query->have_posts()) {
+            return;
+        }
+        ?>
+        <section class="draft-status-section" aria-labelledby="draft-status-incomplete-title">
+            <h4 class="draft-status-section-title" id="draft-status-incomplete-title">
+                <span class="draft-status-indicator draft-status-incomplete" aria-hidden="true">✗</span>
+                <?php
+                printf(
+                    esc_html__('Incomplete Drafts (%d)', 'draft-status'),
+                    $query->found_posts
+                );
+                ?>
+            </h4>
+            <ul class="draft-status-list">
+                <?php while ($query->have_posts()): $query->the_post();
+                    $due_date = get_post_meta(get_the_ID(), '_draft_due_date', true);
+                    $priority = get_post_meta(get_the_ID(), '_draft_priority', true);
+                ?>
+                    <li class="draft-status-item">
+                        <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link" aria-label="<?php echo esc_attr(sprintf(__('Edit incomplete draft: %s, last modified %s', 'draft-status'), get_the_title(), get_the_modified_date())); ?>">
+                            <div class="draft-status-title">
+                                <?php if (!empty($priority) && $priority !== 'none'): ?>
+                                    <?php
+                                    $priority_labels = $this->getPriorityLabels();
+                                    $priority_label = isset($priority_labels[$priority]) ? $priority_labels[$priority] : '';
+                                    ?>
+                                    <?php if (!empty($priority_label)): ?>
+                                        <span class="draft-priority draft-priority-<?php echo esc_attr($priority); ?>">
+                                            <?php echo esc_html($priority_label); ?>
+                                        </span>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                <?php echo esc_html(get_the_title()); ?>
+                            </div>
+                            <div class="draft-status-meta">
+                                <?php
+                                printf(
+                                    esc_html__('Modified: %s', 'draft-status'),
+                                    get_the_modified_date()
+                                );
+
+                                // Show due date if set
+                                if (!empty($due_date)) {
+                                    echo ' • ';
+                                    echo $this->getDueDateDisplay($due_date);
+                                }
+                                ?>
+                            </div>
+                        </a>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        </section>
+        <?php
+    }
+
+    /**
+     * Render complete drafts section
+     *
+     * Displays the complete drafts list ready for review with priority badges and due dates.
+     *
+     * @since 1.4.0
+     * @param WP_Query $query The complete drafts query object.
+     */
+    private function renderDashboardCompletePosts($query) {
+        if (!$query->have_posts()) {
+            return;
+        }
+        ?>
+        <section class="draft-status-section" aria-labelledby="draft-status-complete-title">
+            <h4 class="draft-status-section-title" id="draft-status-complete-title">
+                <span class="draft-status-indicator draft-status-complete" aria-hidden="true">✓</span>
+                <?php
+                printf(
+                    esc_html__('Complete Drafts Ready for Review (%d)', 'draft-status'),
+                    $query->found_posts
+                );
+                ?>
+            </h4>
+            <ul class="draft-status-list">
+                <?php while ($query->have_posts()): $query->the_post();
+                    $due_date = get_post_meta(get_the_ID(), '_draft_due_date', true);
+                    $priority = get_post_meta(get_the_ID(), '_draft_priority', true);
+                ?>
+                    <li class="draft-status-item">
+                        <a href="<?php echo esc_url(get_edit_post_link(get_the_ID())); ?>" class="draft-status-item-link" aria-label="<?php echo esc_attr(sprintf(__('Edit complete draft: %s, last modified %s', 'draft-status'), get_the_title(), get_the_modified_date())); ?>">
+                            <div class="draft-status-title">
+                                <?php if (!empty($priority) && $priority !== 'none'): ?>
+                                    <?php
+                                    $priority_labels = $this->getPriorityLabels();
+                                    $priority_label = isset($priority_labels[$priority]) ? $priority_labels[$priority] : '';
+                                    ?>
+                                    <?php if (!empty($priority_label)): ?>
+                                        <span class="draft-priority draft-priority-<?php echo esc_attr($priority); ?>">
+                                            <?php echo esc_html($priority_label); ?>
+                                        </span>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                <?php echo esc_html(get_the_title()); ?>
+                            </div>
+                            <div class="draft-status-meta">
+                                <?php
+                                printf(
+                                    esc_html__('Modified: %s', 'draft-status'),
+                                    get_the_modified_date()
+                                );
+
+                                // Show due date if set
+                                if (!empty($due_date)) {
+                                    echo ' • ';
+                                    printf(
+                                        esc_html__('Due: %s', 'draft-status'),
+                                        date_i18n(get_option('date_format'), strtotime($due_date))
+                                    );
+                                }
+                                ?>
+                            </div>
+                        </a>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        </section>
+        <?php
     }
 }
 
@@ -1049,4 +1081,4 @@ class DraftStatus {
  *
  * @since 1.0.0
  */
-new DraftStatus();
+$draft_status = new DraftStatus();
