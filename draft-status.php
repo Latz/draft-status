@@ -151,7 +151,7 @@ class DraftStatus {
     private function getDueDateDisplay($due_date) {
         $due_timestamp = strtotime($due_date);
         $today = strtotime('today');
-        $days_diff = floor(($due_timestamp - $today) / (60 * 60 * 24));
+        $days_diff = (int) floor(($due_timestamp - $today) / (60 * 60 * 24));
 
         $date_class = 'draft-due-date';
         $date_label = '';
