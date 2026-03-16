@@ -5,7 +5,7 @@
  * Fired when the plugin is uninstalled.
  * Cleans up all plugin data from the database.
  *
- * @package DraftStatusIndexer
+ * @package DraftStatus
  * @since 1.0.0
  */
 

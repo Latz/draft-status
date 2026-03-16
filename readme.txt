@@ -1,4 +1,4 @@
-=== Draft Status Indexer ===
+=== Draft Status ===
 Contributors: yourwordpressusername
 Tags: draft, posts, writing, status, productivity
 Requires at least: 5.0
@@ -12,7 +12,7 @@ Track and sort your draft posts by completion status. See published posts clearl
 
 == Description ==
 
-Draft Status Indexer helps content creators and site administrators manage their writing workflow more efficiently. This plugin adds a "Writing Status" column to the WordPress posts list and a sidebar meta box on the post editor, providing clear visual indicators of your content status.
+Draft Status helps content creators and site administrators manage their writing workflow more efficiently. This plugin adds a "Writing Status" column to the WordPress posts list and a sidebar meta box on the post editor, providing clear visual indicators of your content status.
 
 = Key Features =
 
@@ -50,7 +50,7 @@ Draft Status Indexer helps content creators and site administrators manage their
 
 1. Log in to your WordPress admin panel
 2. Navigate to Plugins > Add New
-3. Search for "Draft Status Indexer"
+3. Search for "Draft Status"
 4. Click "Install Now" and then "Activate"
 
 = Manual Installation =
@@ -115,7 +115,7 @@ Yes, the plugin works with both the Classic Editor and the Block Editor (Gutenbe
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release of Draft Status Indexer.
+Initial release of Draft Status.
 
 == Additional Information ==
 

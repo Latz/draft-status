@@ -5,7 +5,7 @@
  * in the WordPress admin area. Used in both the posts list column
  * and the post editor meta box.
  *
- * @package DraftStatusIndexer
+ * @package DraftStatus
  * @since 1.0.0
  */
 
@@ -355,4 +355,91 @@
 .draft-status-title .draft-priority {
     vertical-align: middle;
     margin-right: 6px;
+}
+
+/*
+ * Completion Status Toggle Button
+ * ================================
+ * Styles for the toggle button in the post editor meta box.
+ * The button changes appearance based on completion status.
+ */
+
+/*
+ * Base Toggle Button Style
+ * ========================
+ * Applied to the completion status toggle button.
+ */
+.draft-complete-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border-width: 2px;
+    padding: 8px 12px;
+}
+
+.draft-complete-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.draft-complete-toggle:active {
+    transform: translateY(0);
+}
+
+/*
+ * Button Icon
+ * ===========
+ * The checkmark or X icon in the button.
+ */
+.draft-status-icon {
+    font-size: 16px;
+    line-height: 1;
+    font-weight: bold;
+}
+
+/*
+ * Incomplete State
+ * ================
+ * Red styling for incomplete drafts.
+ */
+.draft-complete-toggle.is-incomplete {
+    background: #fff;
+    border-color: #dc3232;
+    color: #dc3232;
+}
+
+.draft-complete-toggle.is-incomplete:hover {
+    background: #fff0f0;
+    border-color: #b02a2a;
+}
+
+.draft-complete-toggle.is-incomplete:focus {
+    border-color: #dc3232;
+    box-shadow: 0 0 0 1px #dc3232;
+}
+
+/*
+ * Complete State
+ * ==============
+ * Green styling for complete drafts.
+ */
+.draft-complete-toggle.is-complete {
+    background: #fff;
+    border-color: #46b450;
+    color: #46b450;
+}
+
+.draft-complete-toggle.is-complete:hover {
+    background: #f0faf0;
+    border-color: #399645;
+}
+
+.draft-complete-toggle.is-complete:focus {
+    border-color: #46b450;
+    box-shadow: 0 0 0 1px #46b450;
 }
