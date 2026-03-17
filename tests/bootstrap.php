@@ -185,6 +185,11 @@ if ( ! function_exists( 'is_admin' ) ) {
 if ( ! function_exists( 'current_user_can' ) ) {
     function current_user_can( $capability, ...$args ) { return false; }
 }
+if ( ! function_exists( 'current_time' ) ) {
+    function current_time( $type, $gmt = 0 ) {
+        return ( $type === 'timestamp' || $type === 'U' ) ? time() : date( 'Y-m-d H:i:s' );
+    }
+}
 
 // Initialise WP_Mock (unit tests call WP_Mock::setUp/tearDown themselves).
 WP_Mock::bootstrap();
