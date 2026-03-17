@@ -50,3 +50,48 @@ if [[ -z "$SONAR_TOKEN" ]]; then
   echo "Error: SONAR_TOKEN not set in .env." >&2
   exit 1
 fi
+
+# --- Fetch issues from SonarCloud ---
+BASE_URL="https://sonarcloud.io/api/issues/search"
+PAGE=1
+TOTAL_FETCHED=0
+ALL_ISSUES="[]"
+
+echo "Fetching issues from SonarCloud..."
+
+while true; do
+  URL="${BASE_URL}?componentKeys=${PROJECT_KEY}&organization=${ORG}&resolved=false&ps=100&p=${PAGE}"
+
+  # Note: head -n -1 requires GNU coreutils (Linux). On macOS use: sed '$d'
+  RESPONSE=$(curl -s -w "\n%{http_code}" \
+    -H "Authorization: Bearer $SONAR_TOKEN" \
+    "$URL")
+
+  HTTP_STATUS=$(echo "$RESPONSE" | tail -1)
+  BODY=$(echo "$RESPONSE" | head -n -1)
+
+  if [[ "$HTTP_STATUS" -ge 400 ]]; then
+    echo "Error: SonarCloud API returned HTTP ${HTTP_STATUS}: ${BODY}" >&2
+    exit 1
+  fi
+
+  PAGE_ISSUES=$(echo "$BODY" | jq '.issues')
+  PAGE_COUNT=$(echo "$PAGE_ISSUES" | jq 'length')
+  TOTAL=$(echo "$BODY" | jq '.paging.total')
+
+  # Merge this page's issues into the accumulated array
+  ALL_ISSUES=$(jq -n --argjson acc "$ALL_ISSUES" --argjson page "$PAGE_ISSUES" '$acc + $page')
+
+  TOTAL_FETCHED=$(( TOTAL_FETCHED + PAGE_COUNT ))
+
+  echo "  Page ${PAGE}: fetched ${PAGE_COUNT} issues (${TOTAL_FETCHED}/${TOTAL} total)"
+
+  # Stop when we have all issues, or page returned 0 (safety guard)
+  if [[ "$TOTAL_FETCHED" -ge "$TOTAL" ]] || [[ "$PAGE_COUNT" -eq 0 ]]; then
+    break
+  fi
+
+  PAGE=$(( PAGE + 1 ))
+done
+
+echo "Done. ${TOTAL_FETCHED} issue(s) fetched."
