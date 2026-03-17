@@ -95,3 +95,8 @@ while true; do
 done
 
 echo "Done. ${TOTAL_FETCHED} issue(s) fetched."
+
+# --- Write sonar-report.json ---
+JSON_OUT="$ROOT/sonar-report.json"
+echo "$ALL_ISSUES" | jq '.' > "$JSON_OUT"
+echo "Written: sonar-report.json"
