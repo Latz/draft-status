@@ -19,7 +19,7 @@ WP_TESTS_DIR=${WP_TESTS_DIR:-/tmp/wordpress-tests-lib}
 set -ex
 
 # Download test library
-if [ ! -d "$WP_TESTS_DIR" ] || [ ! -f "$WP_TESTS_DIR/wp-tests-config-sample.php" ]; then
+if [[ ! -d "$WP_TESTS_DIR" ]] || [[ ! -f "$WP_TESTS_DIR/wp-tests-config-sample.php" ]]; then
 	# Download WordPress test library
 	echo "Downloading WordPress test library..."
 	mkdir -p "$WP_TESTS_DIR"
@@ -34,7 +34,7 @@ if [ ! -d "$WP_TESTS_DIR" ] || [ ! -f "$WP_TESTS_DIR/wp-tests-config-sample.php"
 	svn export --quiet --force "${REPO_URL}/wp-tests-config-sample.php" "$WP_TESTS_DIR/wp-tests-config-sample.php"
 fi
 
-if [ ! -f "$WP_TESTS_DIR/wp-tests-config.php" ]; then
+if [[ ! -f "$WP_TESTS_DIR/wp-tests-config.php" ]]; then
 	# Copy sample config file
 	cp "$WP_TESTS_DIR/wp-tests-config-sample.php" "$WP_TESTS_DIR/wp-tests-config.php"
 

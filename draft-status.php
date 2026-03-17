@@ -548,54 +548,73 @@ class DraftStatus extends DraftStatusRenderer {
 
         $filter_meta_query = array('relation' => 'AND');
 
-        // Handle completion status filter
         if ($has_completion_filter) {
-            $filter = sanitize_text_field(wp_unslash($_GET['draft_completion_filter']));
-
-            if ($filter === 'complete') {
-                $filter_meta_query[] = array(
-                    'key' => '_draft_complete',
-                    'value' => 'yes',
-                    'compare' => '='
-                );
-                $query->set('post_status', 'draft');
-            } elseif ($filter === 'incomplete') {
-                $filter_meta_query[] = array(
-                    'relation' => 'OR',
-                    array(
-                        'key' => '_draft_complete',
-                        'value' => 'no',
-                        'compare' => '='
-                    ),
-                    array(
-                        'key' => '_draft_complete',
-                        'compare' => 'NOT EXISTS'
-                    )
-                );
-                $query->set('post_status', 'draft');
-            }
+            $this->applyCompletionFilter($query, $filter_meta_query);
         }
 
-        // Handle priority filter
         if ($has_priority_filter) {
-            $priority_filter = sanitize_text_field(wp_unslash($_GET['draft_priority_filter']));
-
-            if (in_array($priority_filter, $this->getValidPriorities(), true)) {
-                $filter_meta_query[] = array(
-                    'key' => '_draft_priority',
-                    'value' => $priority_filter,
-                    'compare' => '='
-                );
-                if (!$has_completion_filter) {
-                    $query->set('post_status', 'draft');
-                }
-            }
+            $this->applyPriorityFilter($query, $filter_meta_query, $has_completion_filter);
         }
 
         // Apply meta query if we have filters
         if (count($filter_meta_query) > 1) {
             $meta_query[] = $filter_meta_query;
             $query->set('meta_query', $meta_query);
+        }
+    }
+
+    /**
+     * Apply completion status filter clause to the query.
+     *
+     * @param WP_Query $query             The query object.
+     * @param array    &$filter_meta_query The meta_query array to append to.
+     */
+    private function applyCompletionFilter($query, &$filter_meta_query) {
+        $filter = sanitize_text_field(wp_unslash($_GET['draft_completion_filter']));
+
+        if ($filter === 'complete') {
+            $filter_meta_query[] = array(
+                'key' => '_draft_complete',
+                'value' => 'yes',
+                'compare' => '='
+            );
+            $query->set('post_status', 'draft');
+        } elseif ($filter === 'incomplete') {
+            $filter_meta_query[] = array(
+                'relation' => 'OR',
+                array(
+                    'key' => '_draft_complete',
+                    'value' => 'no',
+                    'compare' => '='
+                ),
+                array(
+                    'key' => '_draft_complete',
+                    'compare' => 'NOT EXISTS'
+                )
+            );
+            $query->set('post_status', 'draft');
+        }
+    }
+
+    /**
+     * Apply priority filter clause to the query.
+     *
+     * @param WP_Query $query              The query object.
+     * @param array    &$filter_meta_query  The meta_query array to append to.
+     * @param bool     $has_completion_filter Whether a completion filter is also active.
+     */
+    private function applyPriorityFilter($query, &$filter_meta_query, $has_completion_filter) {
+        $priority_filter = sanitize_text_field(wp_unslash($_GET['draft_priority_filter']));
+
+        if (in_array($priority_filter, $this->getValidPriorities(), true)) {
+            $filter_meta_query[] = array(
+                'key' => '_draft_priority',
+                'value' => $priority_filter,
+                'compare' => '='
+            );
+            if (!$has_completion_filter) {
+                $query->set('post_status', 'draft');
+            }
         }
     }
 
