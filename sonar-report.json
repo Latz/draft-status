@@ -1,1 +1,397 @@
-[]
+[
+  {
+    "key": "AZz9araUtPc4Xpj8arly",
+    "rule": "shelldre:S7688",
+    "severity": "MAJOR",
+    "component": "Latz_draft-status:bin/install-wp-tests.sh",
+    "project": "Latz_draft-status",
+    "line": 22,
+    "hash": "4837a1bd97fd4974d25b32e752c2bf39",
+    "textRange": {
+      "startLine": 22,
+      "endLine": 22,
+      "startOffset": 3,
+      "endOffset": 4
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Use '[[' instead of '[' for conditional tests. The '[[' construct is safer and more feature-rich.",
+    "effort": "2min",
+    "debt": "2min",
+    "assignee": "Latz@github",
+    "author": "latz@elektroelch.de",
+    "tags": [
+      "bash",
+      "best-practices",
+      "scripting",
+      "shell"
+    ],
+    "creationDate": "2026-03-17T20:07:59+0000",
+    "updateDate": "2026-03-17T20:08:47+0000",
+    "type": "CODE_SMELL",
+    "organization": "latz-1",
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "RELIABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "projectName": "draft-status",
+    "internalTags": []
+  },
+  {
+    "key": "AZz9araUtPc4Xpj8arlz",
+    "rule": "shelldre:S7688",
+    "severity": "MAJOR",
+    "component": "Latz_draft-status:bin/install-wp-tests.sh",
+    "project": "Latz_draft-status",
+    "line": 22,
+    "hash": "4837a1bd97fd4974d25b32e752c2bf39",
+    "textRange": {
+      "startLine": 22,
+      "endLine": 22,
+      "startOffset": 31,
+      "endOffset": 32
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Use '[[' instead of '[' for conditional tests. The '[[' construct is safer and more feature-rich.",
+    "effort": "2min",
+    "debt": "2min",
+    "assignee": "Latz@github",
+    "author": "latz@elektroelch.de",
+    "tags": [
+      "bash",
+      "best-practices",
+      "scripting",
+      "shell"
+    ],
+    "creationDate": "2026-03-17T20:07:59+0000",
+    "updateDate": "2026-03-17T20:08:47+0000",
+    "type": "CODE_SMELL",
+    "organization": "latz-1",
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "RELIABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "projectName": "draft-status",
+    "internalTags": []
+  },
+  {
+    "key": "AZz9araUtPc4Xpj8arl0",
+    "rule": "shelldre:S7688",
+    "severity": "MAJOR",
+    "component": "Latz_draft-status:bin/install-wp-tests.sh",
+    "project": "Latz_draft-status",
+    "line": 26,
+    "hash": "5dc36766632a1f04112fe9993702fd1c",
+    "textRange": {
+      "startLine": 26,
+      "endLine": 26,
+      "startOffset": 4,
+      "endOffset": 5
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Use '[[' instead of '[' for conditional tests. The '[[' construct is safer and more feature-rich.",
+    "effort": "2min",
+    "debt": "2min",
+    "assignee": "Latz@github",
+    "author": "latz@elektroelch.de",
+    "tags": [
+      "bash",
+      "best-practices",
+      "scripting",
+      "shell"
+    ],
+    "creationDate": "2026-03-17T20:07:59+0000",
+    "updateDate": "2026-03-17T20:08:47+0000",
+    "type": "CODE_SMELL",
+    "organization": "latz-1",
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "RELIABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "projectName": "draft-status",
+    "internalTags": []
+  },
+  {
+    "key": "AZz9araUtPc4Xpj8arl1",
+    "rule": "shelldre:S7688",
+    "severity": "MAJOR",
+    "component": "Latz_draft-status:bin/install-wp-tests.sh",
+    "project": "Latz_draft-status",
+    "line": 37,
+    "hash": "ce57d990e0861a3aab5eab26d6af8a5a",
+    "textRange": {
+      "startLine": 37,
+      "endLine": 37,
+      "startOffset": 3,
+      "endOffset": 4
+    },
+    "flows": [],
+    "status": "OPEN",
+    "message": "Use '[[' instead of '[' for conditional tests. The '[[' construct is safer and more feature-rich.",
+    "effort": "2min",
+    "debt": "2min",
+    "assignee": "Latz@github",
+    "author": "latz@elektroelch.de",
+    "tags": [
+      "bash",
+      "best-practices",
+      "scripting",
+      "shell"
+    ],
+    "creationDate": "2026-03-17T20:07:59+0000",
+    "updateDate": "2026-03-17T20:08:47+0000",
+    "type": "CODE_SMELL",
+    "organization": "latz-1",
+    "cleanCodeAttribute": "CONVENTIONAL",
+    "cleanCodeAttributeCategory": "CONSISTENT",
+    "impacts": [
+      {
+        "softwareQuality": "RELIABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "projectName": "draft-status",
+    "internalTags": []
+  },
+  {
+    "key": "AZz8zX9HoGBupAFrnHg-",
+    "rule": "php:S3776",
+    "severity": "CRITICAL",
+    "component": "Latz_draft-status:draft-status.php",
+    "project": "Latz_draft-status",
+    "line": 528,
+    "hash": "c2c365cb0debf6bc0985d5c699a8f0ed",
+    "textRange": {
+      "startLine": 528,
+      "endLine": 528,
+      "startOffset": 11,
+      "endOffset": 19
+    },
+    "flows": [
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 532,
+              "endLine": 532,
+              "startOffset": 8,
+              "endOffset": 10
+            },
+            "msg": "+1"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 532,
+              "endLine": 532,
+              "startOffset": 24,
+              "endOffset": 26
+            },
+            "msg": "+1"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 540,
+              "endLine": 540,
+              "startOffset": 8,
+              "endOffset": 10
+            },
+            "msg": "+1"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 540,
+              "endLine": 540,
+              "startOffset": 36,
+              "endOffset": 38
+            },
+            "msg": "+1"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 545,
+              "endLine": 545,
+              "startOffset": 8,
+              "endOffset": 10
+            },
+            "msg": "+1"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 545,
+              "endLine": 545,
+              "startOffset": 31,
+              "endOffset": 33
+            },
+            "msg": "+1"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 552,
+              "endLine": 552,
+              "startOffset": 8,
+              "endOffset": 10
+            },
+            "msg": "+1"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 555,
+              "endLine": 555,
+              "startOffset": 12,
+              "endOffset": 14
+            },
+            "msg": "+2 (incl. 1 for nesting)"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 562,
+              "endLine": 562,
+              "startOffset": 14,
+              "endOffset": 20
+            },
+            "msg": "+1"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 580,
+              "endLine": 580,
+              "startOffset": 8,
+              "endOffset": 10
+            },
+            "msg": "+1"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 583,
+              "endLine": 583,
+              "startOffset": 12,
+              "endOffset": 14
+            },
+            "msg": "+2 (incl. 1 for nesting)"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 589,
+              "endLine": 589,
+              "startOffset": 16,
+              "endOffset": 18
+            },
+            "msg": "+3 (incl. 2 for nesting)"
+          }
+        ]
+      },
+      {
+        "locations": [
+          {
+            "component": "Latz_draft-status:draft-status.php",
+            "textRange": {
+              "startLine": 596,
+              "endLine": 596,
+              "startOffset": 8,
+              "endOffset": 10
+            },
+            "msg": "+1"
+          }
+        ]
+      }
+    ],
+    "status": "OPEN",
+    "message": "Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.",
+    "effort": "7min",
+    "debt": "7min",
+    "assignee": "Latz@github",
+    "author": "latz@elektroelch.de",
+    "tags": [
+      "brain-overload"
+    ],
+    "creationDate": "2026-03-17T17:17:06+0000",
+    "updateDate": "2026-03-17T17:17:06+0000",
+    "type": "CODE_SMELL",
+    "organization": "latz-1",
+    "cleanCodeAttribute": "FOCUSED",
+    "cleanCodeAttributeCategory": "ADAPTABLE",
+    "impacts": [
+      {
+        "softwareQuality": "MAINTAINABILITY",
+        "severity": "HIGH"
+      }
+    ],
+    "issueStatus": "OPEN",
+    "projectName": "draft-status",
+    "internalTags": []
+  }
+]
