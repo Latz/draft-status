@@ -22,11 +22,11 @@ on:
 
 | # | Step | Action / Command | Notes |
 |---|------|-----------------|-------|
-| 1 | Checkout | `actions/checkout@v4` | `fetch-depth: 0` — full git history required by SonarCloud |
-| 2 | Setup PHP | `shivammathur/setup-php@v2` | PHP 8.1, default extensions |
+| 1 | Checkout | `actions/checkout@v4` | `fetch-depth: 0` — full git history required by SonarCloud for accurate blame and new-code detection; omitting it causes silent analysis degradation |
+| 2 | Setup PHP | `shivammathur/setup-php@v2` | PHP 8.4 — verified against lock file via `composer check-platform-reqs`; all deps resolve cleanly |
 | 3 | Install dependencies | `composer install --no-interaction --prefer-dist` | Installs PHPUnit and WP Mock |
 | 4 | Run unit tests | `vendor/bin/phpunit --testsuite unit` | Fails the build on test failure |
-| 5 | SonarCloud analysis | `SonarSource/sonarcloud-github-action@master` | Reads `sonar-project.properties`; runs only if tests pass |
+| 5 | SonarCloud analysis | `SonarSource/sonarcloud-github-action@v3` | Reads `sonar-project.properties`; runs only if tests pass |
 
 ## Secrets
 
@@ -34,6 +34,11 @@ on:
 |--------|-------------|-------|
 | `SONAR_TOKEN` | GitHub repo → Settings → Secrets and variables → Actions | One-time manual setup |
 | `GITHUB_TOKEN` | Provided automatically by GitHub Actions | No setup needed |
+
+## Prerequisites
+
+- `stubs/wordpress-stubs.php` is committed to the repository (confirmed — tracked in git). Referenced by `sonar.php.stubs` in `sonar-project.properties`; must be present at analysis time.
+- `SONAR_TOKEN` secret must be added to the repository before the first push triggers the workflow.
 
 ## Non-Goals
 
