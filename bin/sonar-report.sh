@@ -100,3 +100,33 @@ echo "Done. ${TOTAL_FETCHED} issue(s) fetched."
 JSON_OUT="$ROOT/sonar-report.json"
 echo "$ALL_ISSUES" | jq '.' > "$JSON_OUT"
 echo "Written: sonar-report.json"
+
+# --- Write sonar-report.md ---
+MD_OUT="$ROOT/sonar-report.md"
+DATETIME=$(date -u +"%Y-%m-%d %H:%M UTC")
+ISSUE_COUNT=$(echo "$ALL_ISSUES" | jq 'length')
+
+{
+  echo "# SonarCloud Report — ${PROJECT_KEY}"
+  echo "_Generated: ${DATETIME} — ${ISSUE_COUNT} open issue(s)_"
+  echo ""
+  echo "| Severity | Type | File | Line | Message | Effort |"
+  echo "|----------|------|------|------|---------|--------|"
+
+  echo "$ALL_ISSUES" | jq -r '
+    def sev_order: {"BLOCKER":0,"CRITICAL":1,"MAJOR":2,"MINOR":3,"INFO":4};
+    sort_by(.severity | sev_order[.] // 99) |
+    .[] |
+    [
+      .severity,
+      .type,
+      (.component | split(":") | last),
+      (.line // "" | tostring),
+      .message,
+      (.effort // "")
+    ] |
+    "| " + join(" | ") + " |"
+  '
+} > "$MD_OUT"
+
+echo "Written: sonar-report.md"
