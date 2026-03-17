@@ -180,7 +180,9 @@ if ( ! function_exists( 'add_action' ) ) {
     function add_action( $hook, $callback, $priority = 10, $args = 1 ) {}
 }
 if ( ! function_exists( 'is_admin' ) ) {
-    function is_admin() { return false; }
+    function is_admin() {
+        return isset( $GLOBALS['_draft_status_is_admin'] ) ? (bool) $GLOBALS['_draft_status_is_admin'] : false;
+    }
 }
 if ( ! function_exists( 'current_user_can' ) ) {
     function current_user_can( $capability, ...$args ) { return false; }
@@ -188,6 +190,40 @@ if ( ! function_exists( 'current_user_can' ) ) {
 if ( ! function_exists( 'current_time' ) ) {
     function current_time( $type, $gmt = 0 ) {
         return ( $type === 'timestamp' || $type === 'U' ) ? time() : date( 'Y-m-d H:i:s' );
+    }
+}
+
+// Minimal WP_Query stub for unit tests.
+if ( ! class_exists( 'WP_Query' ) ) {
+    class WP_Query {
+        public array  $query_vars = [];
+        public int    $found_posts = 0;
+        private array $_posts = [];
+        private int   $_index  = 0;
+        private bool  $_is_main = true;
+
+        public function __construct( array $args = [] ) {
+            $this->query_vars = $args;
+        }
+
+        public function is_main_query(): bool { return $this->_is_main; }
+        public function set_main( bool $v ): void { $this->_is_main = $v; }
+
+        public function get( string $key, $default = '' ) {
+            return $this->query_vars[ $key ] ?? $default;
+        }
+        public function set( string $key, $value ): void {
+            $this->query_vars[ $key ] = $value;
+        }
+        public function have_posts(): bool {
+            return $this->_index < count( $this->_posts );
+        }
+        public function the_post(): void { $this->_index++; }
+        public function set_posts( array $posts ): void {
+            $this->_posts      = $posts;
+            $this->found_posts = count( $posts );
+            $this->_index      = 0;
+        }
     }
 }
 

@@ -27,6 +27,7 @@ class CustomPriorityOrderbyTest extends TestCase {
 
     public function tearDown(): void {
         WP_Mock::tearDown();
+        unset( $GLOBALS['_draft_status_is_admin'] );
     }
 
     /** @test */
@@ -56,6 +57,76 @@ class CustomPriorityOrderbyTest extends TestCase {
         $result = $this->plugin->customPriorityOrderby('original_2', $query);
 
         $this->assertSame('original_2', $result);
+    }
+
+    /** @test */
+    public function returns_sql_orderby_when_admin_and_main_query(): void {
+        global $wpdb;
+        $wpdb           = new stdClass();
+        $wpdb->postmeta = 'wp_postmeta';
+        $wpdb->posts    = 'wp_posts';
+
+        $GLOBALS['_draft_status_is_admin'] = true;
+
+        $query           = new MockWPQuery2();
+        $query->_is_main = true;
+
+        $result = $this->plugin->customPriorityOrderby( 'original', $query );
+
+        $this->assertStringContainsString( 'CASE', $result );
+        $this->assertNotSame( 'original', $result );
+    }
+
+    /** @test */
+    public function sql_contains_urgent_priority_ordering(): void {
+        global $wpdb;
+        $wpdb           = new stdClass();
+        $wpdb->postmeta = 'wp_postmeta';
+        $wpdb->posts    = 'wp_posts';
+
+        $GLOBALS['_draft_status_is_admin'] = true;
+
+        $query           = new MockWPQuery2();
+        $query->_is_main = true;
+
+        $result = $this->plugin->customPriorityOrderby( 'original', $query );
+
+        $this->assertStringContainsString( 'urgent', $result );
+    }
+
+    /** @test */
+    public function sql_contains_asc_order_by_default(): void {
+        global $wpdb;
+        $wpdb           = new stdClass();
+        $wpdb->postmeta = 'wp_postmeta';
+        $wpdb->posts    = 'wp_posts';
+
+        $GLOBALS['_draft_status_is_admin'] = true;
+
+        $query           = new MockWPQuery2();
+        $query->_is_main = true;
+
+        $result = $this->plugin->customPriorityOrderby( 'original', $query );
+
+        $this->assertStringContainsString( 'ASC', $result );
+    }
+
+    /** @test */
+    public function sql_contains_desc_order_when_query_order_is_desc(): void {
+        global $wpdb;
+        $wpdb           = new stdClass();
+        $wpdb->postmeta = 'wp_postmeta';
+        $wpdb->posts    = 'wp_posts';
+
+        $GLOBALS['_draft_status_is_admin'] = true;
+
+        $query                   = new MockWPQuery2();
+        $query->_is_main         = true;
+        $query->data['order']    = 'DESC';
+
+        $result = $this->plugin->customPriorityOrderby( 'original', $query );
+
+        $this->assertStringContainsString( 'DESC', $result );
     }
 
     /** @test */

@@ -40,6 +40,7 @@ class SortByCompletionTest extends TestCase {
 
     public function tearDown(): void {
         WP_Mock::tearDown();
+        unset( $GLOBALS['_draft_status_is_admin'] );
     }
 
     /** @test */
@@ -79,6 +80,53 @@ class SortByCompletionTest extends TestCase {
         $this->plugin->sortByCompletion( $query );
 
         $this->assertArrayNotHasKey( 'meta_query', $query->data );
+    }
+
+    /** @test */
+    public function sets_meta_query_clauses_when_admin_main_query_with_draft_completion_orderby(): void {
+        $GLOBALS['_draft_status_is_admin'] = true;
+
+        $query             = new MockWPQuery();
+        $query->_is_main   = true;
+        $query->data['orderby'] = 'draft_completion';
+
+        $this->plugin->sortByCompletion( $query );
+
+        $this->assertArrayHasKey( 'meta_query', $query->data );
+        $this->assertArrayHasKey( 'priority_clause', $query->data['meta_query'] );
+    }
+
+    /** @test */
+    public function sets_orderby_array_when_admin_main_query_with_draft_completion_orderby(): void {
+        $GLOBALS['_draft_status_is_admin'] = true;
+
+        $query             = new MockWPQuery();
+        $query->_is_main   = true;
+        $query->data['orderby'] = 'draft_completion';
+
+        $this->plugin->sortByCompletion( $query );
+
+        $this->assertIsArray( $query->data['orderby'] );
+    }
+
+    /** @test */
+    public function preserves_existing_meta_query_when_sorting(): void {
+        $GLOBALS['_draft_status_is_admin'] = true;
+
+        $query             = new MockWPQuery();
+        $query->_is_main   = true;
+        $query->data['orderby']    = 'draft_completion';
+        $query->data['meta_query'] = array(
+            'existing_clause' => array(
+                'key'     => '_some_meta_key',
+                'compare' => 'EXISTS',
+            ),
+        );
+
+        $this->plugin->sortByCompletion( $query );
+
+        $this->assertArrayHasKey( 'priority_clause', $query->data['meta_query'] );
+        $this->assertArrayHasKey( 'existing_clause', $query->data['meta_query'] );
     }
 
     /** @test */

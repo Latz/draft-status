@@ -95,4 +95,99 @@ class SaveCompletionStatusTest extends TestCase {
 
         $this->assertTrue( true );
     }
+
+    /** @test */
+    public function saves_no_when_draft_complete_not_in_post(): void {
+        if ( defined( 'DOING_AUTOSAVE' ) ) {
+            $this->markTestSkipped( 'DOING_AUTOSAVE defined — autosave guard fires first, else branch cannot be reached.' );
+        }
+
+        // Ensure draft_complete is NOT in $_POST.
+        unset( $_POST['draft_complete'] );
+        $_POST['draft_completion_nonce_field'] = 'nonce';
+
+        WP_Mock::userFunction( 'sanitize_text_field' )->andReturnArg( 0 );
+        WP_Mock::userFunction( 'wp_unslash' )->andReturnArg( 0 );
+        WP_Mock::userFunction( 'wp_verify_nonce' )->andReturn( 1 );
+        WP_Mock::userFunction( 'current_user_can' )
+            ->with( 'edit_post', 42 )
+            ->andReturn( true );
+
+        // The else branch must call update_post_meta with 'no'.
+        WP_Mock::userFunction( 'update_post_meta' )
+            ->with( 42, '_draft_complete', 'no' )
+            ->once()
+            ->andReturn( true );
+
+        // saveDraftDueDate and saveDraftPriority also call update_post_meta / delete_post_meta.
+        // Allow any additional calls so they don't cause assertion failures.
+        WP_Mock::userFunction( 'update_post_meta' )->andReturn( true );
+        WP_Mock::userFunction( 'delete_post_meta' )->andReturn( true );
+
+        $this->plugin->saveCompletionStatus( 42 );
+
+        $this->assertTrue( true );
+    }
+
+    /** @test */
+    public function saves_yes_when_draft_complete_is_yes_in_post(): void {
+        if ( defined( 'DOING_AUTOSAVE' ) ) {
+            $this->markTestSkipped( 'DOING_AUTOSAVE defined — autosave guard fires first, save branch cannot be reached.' );
+        }
+
+        $_POST['draft_completion_nonce_field'] = 'nonce';
+        $_POST['draft_complete']               = 'yes';
+
+        WP_Mock::userFunction( 'sanitize_text_field' )->andReturnArg( 0 );
+        WP_Mock::userFunction( 'wp_unslash' )->andReturnArg( 0 );
+        WP_Mock::userFunction( 'wp_verify_nonce' )->andReturn( 1 );
+        WP_Mock::userFunction( 'current_user_can' )
+            ->with( 'edit_post', 55 )
+            ->andReturn( true );
+
+        // The if branch must call update_post_meta with 'yes'.
+        WP_Mock::userFunction( 'update_post_meta' )
+            ->with( 55, '_draft_complete', 'yes' )
+            ->once()
+            ->andReturn( true );
+
+        // Allow additional calls from saveDraftDueDate / saveDraftPriority.
+        WP_Mock::userFunction( 'update_post_meta' )->andReturn( true );
+        WP_Mock::userFunction( 'delete_post_meta' )->andReturn( true );
+
+        $this->plugin->saveCompletionStatus( 55 );
+
+        $this->assertTrue( true );
+    }
+
+    /** @test */
+    public function saves_no_when_draft_complete_value_is_invalid(): void {
+        if ( defined( 'DOING_AUTOSAVE' ) ) {
+            $this->markTestSkipped( 'DOING_AUTOSAVE defined — autosave guard fires first, save branch cannot be reached.' );
+        }
+
+        $_POST['draft_completion_nonce_field'] = 'nonce';
+        $_POST['draft_complete']               = 'maybe'; // not 'yes' → whitelist maps to 'no'
+
+        WP_Mock::userFunction( 'sanitize_text_field' )->andReturnArg( 0 );
+        WP_Mock::userFunction( 'wp_unslash' )->andReturnArg( 0 );
+        WP_Mock::userFunction( 'wp_verify_nonce' )->andReturn( 1 );
+        WP_Mock::userFunction( 'current_user_can' )
+            ->with( 'edit_post', 77 )
+            ->andReturn( true );
+
+        // Whitelist validation: 'maybe' is not 'yes', so 'no' should be saved.
+        WP_Mock::userFunction( 'update_post_meta' )
+            ->with( 77, '_draft_complete', 'no' )
+            ->once()
+            ->andReturn( true );
+
+        // Allow additional calls from saveDraftDueDate / saveDraftPriority.
+        WP_Mock::userFunction( 'update_post_meta' )->andReturn( true );
+        WP_Mock::userFunction( 'delete_post_meta' )->andReturn( true );
+
+        $this->plugin->saveCompletionStatus( 77 );
+
+        $this->assertTrue( true );
+    }
 }

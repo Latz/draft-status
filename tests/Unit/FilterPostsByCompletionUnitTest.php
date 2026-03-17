@@ -29,6 +29,9 @@ class FilterPostsByCompletionUnitTest extends TestCase {
     public function tearDown(): void {
         WP_Mock::tearDown();
         unset( $_GET['draft_completion_filter'], $_GET['draft_priority_filter'] );
+        unset( $GLOBALS['_draft_status_is_admin'] );
+        global $pagenow;
+        $pagenow = '';
     }
 
     /** @test */
@@ -137,5 +140,70 @@ class FilterPostsByCompletionUnitTest extends TestCase {
         $method->invokeArgs( $this->plugin, [ $query, &$filter_meta_query, $has_completion_filter ] );
 
         $this->assertArrayNotHasKey( 'post_status', $query->data );
+    }
+
+    /** @test */
+    public function sets_meta_query_when_admin_with_completion_filter(): void {
+        $GLOBALS['_draft_status_is_admin'] = true;
+        global $pagenow;
+        $pagenow = 'edit.php';
+        $_GET['draft_completion_filter'] = 'complete';
+
+        $query = new MockWPQueryFilter();
+        $this->plugin->filterPostsByCompletion( $query );
+
+        $this->assertArrayHasKey( 'meta_query', $query->data );
+    }
+
+    /** @test */
+    public function returns_early_when_no_filters_set(): void {
+        $GLOBALS['_draft_status_is_admin'] = true;
+        global $pagenow;
+        $pagenow = 'edit.php';
+
+        $query = new MockWPQueryFilter();
+        $this->plugin->filterPostsByCompletion( $query );
+
+        $this->assertArrayNotHasKey( 'meta_query', $query->data );
+    }
+
+    /** @test */
+    public function returns_early_when_pagenow_is_not_edit_php(): void {
+        $GLOBALS['_draft_status_is_admin'] = true;
+        global $pagenow;
+        $pagenow = 'post.php';
+        $_GET['draft_completion_filter'] = 'complete';
+
+        $query = new MockWPQueryFilter();
+        $this->plugin->filterPostsByCompletion( $query );
+
+        $this->assertArrayNotHasKey( 'meta_query', $query->data );
+    }
+
+    /** @test */
+    public function sets_meta_query_when_admin_with_priority_filter(): void {
+        $GLOBALS['_draft_status_is_admin'] = true;
+        global $pagenow;
+        $pagenow = 'edit.php';
+        $_GET['draft_priority_filter'] = 'high';
+
+        $query = new MockWPQueryFilter();
+        $this->plugin->filterPostsByCompletion( $query );
+
+        $this->assertArrayHasKey( 'meta_query', $query->data );
+    }
+
+    /** @test */
+    public function sets_meta_query_when_both_filters_set(): void {
+        $GLOBALS['_draft_status_is_admin'] = true;
+        global $pagenow;
+        $pagenow = 'edit.php';
+        $_GET['draft_completion_filter'] = 'incomplete';
+        $_GET['draft_priority_filter'] = 'urgent';
+
+        $query = new MockWPQueryFilter();
+        $this->plugin->filterPostsByCompletion( $query );
+
+        $this->assertArrayHasKey( 'meta_query', $query->data );
     }
 }

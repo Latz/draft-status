@@ -81,4 +81,19 @@ class RenderCompletionStatusTest extends TestCase {
 
         $this->assertStringContainsString( '✗', $output );
     }
+
+    /** @test */
+    public function empty_string_status_outputs_incomplete_span(): void {
+        WP_Mock::userFunction( 'esc_attr__' )->andReturnArg( 0 );
+        WP_Mock::userFunction( 'esc_html__' )->andReturnArg( 0 );
+
+        $method = new ReflectionMethod( DraftStatus::class, 'renderCompletionStatus' );
+        $method->setAccessible( true );
+
+        ob_start();
+        $method->invoke( $this->plugin, '' );
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString( 'draft-status-incomplete', $output );
+    }
 }

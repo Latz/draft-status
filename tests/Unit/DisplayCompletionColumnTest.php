@@ -94,4 +94,30 @@ class DisplayCompletionColumnTest extends TestCase {
 
         $this->assertStringContainsString( 'draft-status-incomplete', $output );
     }
+
+    /** @test */
+    public function draft_column_outputs_no_due_date_for_empty_meta(): void {
+        // get_post_meta returns '' (bootstrap stub), so renderDueDate returns early.
+        WP_Mock::userFunction( 'esc_attr__' )->andReturnArg( 0 );
+        WP_Mock::userFunction( 'esc_html__' )->andReturnArg( 0 );
+
+        ob_start();
+        $this->plugin->displayCompletionColumn( 'draft_completion', 1 );
+        $output = ob_get_clean();
+
+        $this->assertStringNotContainsString( 'draft-due-date', $output );
+    }
+
+    /** @test */
+    public function draft_column_outputs_no_priority_badge_for_empty_meta(): void {
+        // get_post_meta returns '' (bootstrap stub), so renderPriorityBadge returns early.
+        WP_Mock::userFunction( 'esc_attr__' )->andReturnArg( 0 );
+        WP_Mock::userFunction( 'esc_html__' )->andReturnArg( 0 );
+
+        ob_start();
+        $this->plugin->displayCompletionColumn( 'draft_completion', 1 );
+        $output = ob_get_clean();
+
+        $this->assertStringNotContainsString( 'draft-priority', $output );
+    }
 }
