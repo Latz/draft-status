@@ -3,6 +3,7 @@ name: SonarCloud
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   sonarcloud:
