@@ -214,17 +214,6 @@ class DraftStatus extends DraftStatusRenderer {
 
         // If sorting by draft_completion, sort by priority then completion status
         if ($query->get('orderby') === 'draft_completion') {
-            $query->set('meta_query', array(
-                'relation' => 'AND',
-                'priority_clause' => array(
-                    'key' => '_draft_priority',
-                    'compare' => 'EXISTS'
-                ),
-                'completion_clause' => array(
-                    'key' => '_draft_complete',
-                    'compare' => 'EXISTS'
-                )
-            ));
             // Get existing meta query to avoid overwriting other filters
             $meta_query = $query->get('meta_query');
             if (empty($meta_query) || !is_array($meta_query)) {
