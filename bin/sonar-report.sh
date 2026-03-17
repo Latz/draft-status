@@ -130,3 +130,8 @@ ISSUE_COUNT=$(echo "$ALL_ISSUES" | jq 'length')
 } > "$MD_OUT"
 
 echo "Written: sonar-report.md"
+
+echo ""
+echo "Report complete."
+echo "  sonar-report.json  (${ISSUE_COUNT} issues)"
+echo "  sonar-report.md    (${ISSUE_COUNT} issues)"
