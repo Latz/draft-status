@@ -23,7 +23,7 @@ if [[ ! -d "$WP_TESTS_DIR" ]] || [[ ! -f "$WP_TESTS_DIR/wp-tests-config-sample.p
 	# Download WordPress test library
 	echo "Downloading WordPress test library..."
 	mkdir -p "$WP_TESTS_DIR"
-	if [ "$WP_VERSION" == 'latest' ]; then
+	if [[ "$WP_VERSION" == 'latest' ]]; then
 		REPO_URL="https://develop.svn.wordpress.org/trunk"
 	else
 		REPO_URL="https://develop.svn.wordpress.org/tags/${WP_VERSION}"
