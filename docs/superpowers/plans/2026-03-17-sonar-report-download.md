@@ -15,6 +15,8 @@
 | File | Action | Responsibility |
 |------|--------|----------------|
 | `bin/sonar-report.sh` | Create | Main script — config loading, API fetch, JSON + MD output |
+| `sonar-report.json` | Overwrite | Generated output — committed after final run |
+| `sonar-report.md` | Overwrite | Generated output — committed after final run |
 | `.env.example` | Create | Documents required `SONAR_TOKEN` var for developers |
 | `.gitignore` | Edit | Add `.env` line (not `.env*`) |
 
@@ -46,13 +48,16 @@ SONAR_TOKEN=your_sonarcloud_token_here
 
 - [ ] **Step 3: Add `.env` to `.gitignore`**
 
-Append `.env` to `.gitignore`. Use the exact edit below (add only `.env`, not `.env*` — that would also ignore `.env.example`):
+Append a single line `.env` to `.gitignore`. Do NOT use `.env*` — that would also ignore `.env.example`.
 
+```bash
+echo '.env' >> .gitignore
 ```
-/.claude
-/.claude-dev-helper
-CLAUDE.local.md
-.env
+
+Verify it was added:
+```bash
+grep -n '^\.env$' .gitignore
+# Expected: prints the line number and ".env"
 ```
 
 - [ ] **Step 4: Commit**
@@ -201,6 +206,7 @@ echo "Fetching issues from SonarCloud..."
 while true; do
   URL="${BASE_URL}?componentKeys=${PROJECT_KEY}&organization=${ORG}&resolved=false&ps=100&p=${PAGE}"
 
+  # Note: head -n -1 requires GNU coreutils (Linux). On macOS use: sed '$d'
   RESPONSE=$(curl -s -w "\n%{http_code}" \
     -H "Authorization: Bearer $SONAR_TOKEN" \
     "$URL")
@@ -237,13 +243,15 @@ echo "Done. ${TOTAL_FETCHED} issue(s) fetched."
 
 - [ ] **Step 2: Smoke-test the pagination logic manually**
 
-With a valid `.env` in place:
+With a valid `.env` in place (all commands run from project root):
 
 ```bash
-bash bin/sonar-report.sh
+bash bin/sonar-report.sh && echo "Exit code: 0 (OK)"
 ```
 
-Expected output: lines like `Page 1: fetched N issues (N/{TOTAL} total)` and `Done. {TOTAL} issue(s) fetched.` The exact count will vary — verify the fetched count matches the total reported by the API, not a specific number.
+Expected output: lines like `Page 1: fetched N issues (N/{TOTAL} total)` and `Done. {TOTAL} issue(s) fetched.` followed by `Exit code: 0 (OK)`. The exact count will vary — verify the fetched count matches the total reported by the API, not a specific number.
+
+> Note: The output files `sonar-report.json` and `sonar-report.md` are intentionally left uncommitted here — they will be committed together in Task 6.
 
 If you don't have a `.env` yet, create one:
 ```bash
@@ -277,10 +285,12 @@ echo "Written: sonar-report.json"
 
 ```bash
 bash bin/sonar-report.sh
-head -5 sonar-report.json
+jq type sonar-report.json        # must print: "array"
+jq 'length' sonar-report.json   # prints issue count
+jq '.[0] | keys' sonar-report.json  # should include "severity", "type", "component", "message"
 ```
 
-Expected: a valid JSON array starting with `[` and containing issue objects with fields like `key`, `severity`, `type`, `component`, `line`, `message`, `effort`.
+> Note: `sonar-report.json` is intentionally left uncommitted here — it will be committed in Task 6.
 
 - [ ] **Step 3: Commit**
 
@@ -351,6 +361,8 @@ _Generated: 2026-03-17 14:30 UTC — {N} open issue(s)_
 
 Check sort order: any CRITICAL rows must appear before MAJOR rows, MAJOR before MINOR.
 
+> Note: `sonar-report.md` is intentionally left uncommitted here — it will be committed in Task 6.
+
 - [ ] **Step 3: Commit**
 
 ```bash
@@ -403,7 +415,7 @@ After all tasks are complete:
 - [ ] `sonar-report.json` is a valid bare JSON array (starts with `[`, ends with `]`)
 - [ ] `sonar-report.md` has correct header format and issues sorted BLOCKER → CRITICAL → MAJOR → MINOR → INFO
 - [ ] Running without `.env` produces: `Error: .env not found. Create one with SONAR_TOKEN=your_token.`
-- [ ] Running without `curl` or `jq` produces the appropriate error message
+- [ ] The `curl`/`jq` prerequisite checks are validated by code review of the `command -v` guards in the script (runtime testing requires uninstalling the tools, which is impractical)
 - [ ] `.env` is in `.gitignore`, `.env.example` is NOT — verify with:
   ```bash
   git check-ignore -v .env        # should print the .gitignore rule
