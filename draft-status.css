@@ -16,7 +16,7 @@
  * Ensures consistent bold font weight across all statuses.
  */
 .draft-status-indicator {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 /*
@@ -29,8 +29,8 @@
  * Symbol: ● (filled circle)
  */
 .draft-status-published {
-    color: #2271b1; /* WordPress admin blue */
-    font-weight: bold;
+	color: #2271b1; /* WordPress admin blue */
+	font-weight: bold;
 }
 
 /*
@@ -42,8 +42,8 @@
  * Symbol: ✓ (checkmark)
  */
 .draft-status-complete {
-    color: #46b450; /* WordPress success green */
-    font-weight: bold;
+	color: #46b450; /* WordPress success green */
+	font-weight: bold;
 }
 
 /*
@@ -55,8 +55,8 @@
  * Symbol: ✗ (X mark)
  */
 .draft-status-incomplete {
-    color: #dc3232; /* WordPress error red */
-    font-weight: bold;
+	color: #dc3232; /* WordPress error red */
+	font-weight: bold;
 }
 
 /*
@@ -66,7 +66,7 @@
  * Creates a cleaner, more compact layout in the sidebar.
  */
 .draft-status-metabox-published {
-    margin: 0;
+	margin: 0;
 }
 
 /*
@@ -76,7 +76,7 @@
  * to make it more prominent and easier to read at a glance.
  */
 .draft-status-metabox-published .draft-status-published {
-    font-size: 14px;
+	font-size: 14px;
 }
 
 /*
@@ -92,7 +92,7 @@
  * Main container for the dashboard widget content.
  */
 .draft-status-widget {
-    font-size: 14px;
+	font-size: 14px;
 }
 
 /*
@@ -101,11 +101,11 @@
  * Container for each section (incomplete/complete drafts).
  */
 .draft-status-section {
-    margin-bottom: 20px;
+	margin-bottom: 20px;
 }
 
 .draft-status-section:last-of-type {
-    margin-bottom: 15px;
+	margin-bottom: 15px;
 }
 
 /*
@@ -114,12 +114,12 @@
  * Title for each section with icon and count.
  */
 .draft-status-section-title {
-    margin: 0 0 10px 0;
-    font-size: 14px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+	margin: 0 0 10px 0;
+	font-size: 14px;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 5px;
 }
 
 /*
@@ -128,9 +128,9 @@
  * List of draft titles.
  */
 .draft-status-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
 /*
@@ -139,12 +139,12 @@
  * Individual draft item in the list.
  */
 .draft-status-item {
-    margin: 0 0 8px 0;
-    padding: 0;
+	margin: 0 0 8px 0;
+	padding: 0;
 }
 
 .draft-status-item:last-child {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
 
 /*
@@ -153,16 +153,16 @@
  * The clickable link container for each draft item.
  */
 .draft-status-item-link {
-    display: block;
-    text-decoration: none;
-    padding: 8px 10px;
-    border-radius: 3px;
-    background: #f6f7f7;
-    transition: background 0.2s;
+	display: block;
+	text-decoration: none;
+	padding: 8px 10px;
+	border-radius: 3px;
+	background: #f6f7f7;
+	transition: background 0.2s;
 }
 
 .draft-status-item-link:hover {
-    background: #dcdcde;
+	background: #dcdcde;
 }
 
 /*
@@ -171,18 +171,18 @@
  * The title of the draft with ellipsis truncation.
  */
 .draft-status-title {
-    color: #2271b1;
-    font-weight: 500;
-    margin-bottom: 3px;
+	color: #2271b1;
+	font-weight: 500;
+	margin-bottom: 3px;
 
-    /* Ellipsis truncation */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+	/* Ellipsis truncation */
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .draft-status-item-link:hover .draft-status-title {
-    color: #135e96;
+	color: #135e96;
 }
 
 /*
@@ -191,9 +191,9 @@
  * The last modified date displayed below the title.
  */
 .draft-status-date {
-    color: #646970;
-    font-size: 12px;
-    line-height: 1.4;
+	color: #646970;
+	font-size: 12px;
+	line-height: 1.4;
 }
 
 /*
@@ -202,9 +202,9 @@
  * Meta information displayed below draft titles (modified date, due date).
  */
 .draft-status-meta {
-    color: #646970;
-    font-size: 12px;
-    line-height: 1.4;
+	color: #646970;
+	font-size: 12px;
+	line-height: 1.4;
 }
 
 /*
@@ -219,8 +219,8 @@
  * Applied to all due date indicators.
  */
 .draft-due-date {
-    font-size: 12px;
-    display: inline-block;
+	font-size: 12px;
+	display: inline-block;
 }
 
 /*
@@ -229,8 +229,8 @@
  * Red color for overdue drafts.
  */
 .draft-due-overdue {
-    color: #dc3232;
-    font-weight: 600;
+	color: #dc3232;
+	font-weight: 600;
 }
 
 /*
@@ -239,8 +239,8 @@
  * Orange color for drafts due today.
  */
 .draft-due-today {
-    color: #f56e28;
-    font-weight: 600;
+	color: #f56e28;
+	font-weight: 600;
 }
 
 /*
@@ -249,8 +249,8 @@
  * Yellow/amber color for drafts due within 3 days.
  */
 .draft-due-soon {
-    color: #dba617;
-    font-weight: 600;
+	color: #dba617;
+	font-weight: 600;
 }
 
 /*
@@ -260,18 +260,18 @@
  * Styled to stand out as a call-to-action.
  */
 .draft-status-link {
-    margin-top: 15px;
-    text-align: center;
+	margin-top: 15px;
+	text-align: center;
 }
 
 .draft-status-link a {
-    text-decoration: none;
-    color: #2271b1;
-    font-weight: 500;
+	text-decoration: none;
+	color: #2271b1;
+	font-weight: 500;
 }
 
 .draft-status-link a:hover {
-    color: #135e96;
+	color: #135e96;
 }
 
 /*
@@ -289,15 +289,15 @@
  * with minimal styling for clean appearance.
  */
 .draft-priority {
-    display: inline-block;
-    padding: 1px 6px;
-    border-radius: 2px;
-    font-size: 10px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.2px;
-    white-space: nowrap;
-    opacity: 0.8;
+	display: inline-block;
+	padding: 1px 6px;
+	border-radius: 2px;
+	font-size: 10px;
+	font-weight: 500;
+	text-transform: uppercase;
+	letter-spacing: 0.2px;
+	white-space: nowrap;
+	opacity: 0.8;
 }
 
 /*
@@ -307,9 +307,9 @@
  * without overwhelming the interface.
  */
 .draft-priority-urgent {
-    background: #fff0f0;
-    color: #b91c1c;
-    border: 1px solid #f0d0d0;
+	background: #fff0f0;
+	color: #b91c1c;
+	border: 1px solid #f0d0d0;
 }
 
 /*
@@ -318,9 +318,9 @@
  * High priority level. Subtle orange to indicate importance.
  */
 .draft-priority-high {
-    background: #fff8f0;
-    color: #9a4a1a;
-    border: 1px solid #f5e0cc;
+	background: #fff8f0;
+	color: #9a4a1a;
+	border: 1px solid #f5e0cc;
 }
 
 /*
@@ -329,9 +329,9 @@
  * Standard priority level. Subtle neutral color.
  */
 .draft-priority-medium {
-    background: #f5f8fa;
-    color: #50575e;
-    border: 1px solid #dfe4e8;
+	background: #f5f8fa;
+	color: #50575e;
+	border: 1px solid #dfe4e8;
 }
 
 /*
@@ -340,9 +340,9 @@
  * Lowest priority level. Very subtle muted green.
  */
 .draft-priority-low {
-    background: #f6faf7;
-    color: #2d7a2e;
-    border: 1px solid #e0f0e0;
+	background: #f6faf7;
+	color: #2d7a2e;
+	border: 1px solid #e0f0e0;
 }
 
 /*
@@ -353,8 +353,8 @@
  * Adds spacing after the badge before the title text.
  */
 .draft-status-title .draft-priority {
-    vertical-align: middle;
-    margin-right: 6px;
+	vertical-align: middle;
+	margin-right: 6px;
 }
 
 /*
@@ -370,25 +370,25 @@
  * Applied to the completion status toggle button.
  */
 .draft-complete-toggle {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    border-width: 2px;
-    padding: 8px 12px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	transition: all 0.2s ease;
+	border-width: 2px;
+	padding: 8px 12px;
 }
 
 .draft-complete-toggle:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transform: translateY(-1px);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .draft-complete-toggle:active {
-    transform: translateY(0);
+	transform: translateY(0);
 }
 
 /*
@@ -397,9 +397,9 @@
  * The checkmark or X icon in the button.
  */
 .draft-status-icon {
-    font-size: 16px;
-    line-height: 1;
-    font-weight: bold;
+	font-size: 16px;
+	line-height: 1;
+	font-weight: bold;
 }
 
 /*
@@ -408,19 +408,19 @@
  * Red styling for incomplete drafts.
  */
 .draft-complete-toggle.is-incomplete {
-    background: #fff;
-    border-color: #dc3232;
-    color: #dc3232;
+	background: #fff;
+	border-color: #dc3232;
+	color: #dc3232;
 }
 
 .draft-complete-toggle.is-incomplete:hover {
-    background: #fff0f0;
-    border-color: #b02a2a;
+	background: #fff0f0;
+	border-color: #b02a2a;
 }
 
 .draft-complete-toggle.is-incomplete:focus {
-    border-color: #dc3232;
-    box-shadow: 0 0 0 1px #dc3232;
+	border-color: #dc3232;
+	box-shadow: 0 0 0 1px #dc3232;
 }
 
 /*
@@ -429,17 +429,17 @@
  * Green styling for complete drafts.
  */
 .draft-complete-toggle.is-complete {
-    background: #fff;
-    border-color: #1e7a24;
-    color: #1e7a24;
+	background: #fff;
+	border-color: #1e7a24;
+	color: #1e7a24;
 }
 
 .draft-complete-toggle.is-complete:hover {
-    background: #f0faf0;
-    border-color: #399645;
+	background: #f0faf0;
+	border-color: #175e1b;
 }
 
 .draft-complete-toggle.is-complete:focus {
-    border-color: #46b450;
-    box-shadow: 0 0 0 1px #46b450;
+	border-color: #1e7a24;
+	box-shadow: 0 0 0 1px #1e7a24;
 }

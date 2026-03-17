@@ -16,6 +16,5 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 
 // Delete all post meta for draft completion status
 delete_post_meta_by_key('_draft_complete');
-
-// Optional: Clear any cached data
-wp_cache_flush();
+delete_post_meta_by_key('_draft_priority');
+delete_post_meta_by_key('_draft_due_date');

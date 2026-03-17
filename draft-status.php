@@ -3,7 +3,7 @@
  * Plugin Name: Draft Status
  * Plugin URI: https://github.com/yourusername/draft-status
  * Description: Mark draft posts by completion status (complete/incomplete) with priority levels
- * Version: 1.4.0
+ * Version: 1.5.0
  * Author: Latz
  * Author URI: https://elektroelch.de
  * * License: GPL v2 or later
@@ -207,8 +207,6 @@ class DraftStatus extends DraftStatusRenderer {
      * @param WP_Query $query The WordPress query object.
      */
     public function sortByCompletion($query) {
-        global $wpdb;
-
         // Only modify admin queries on the main query
         if (!is_admin() || !$query->is_main_query()) {
             return;
@@ -227,6 +225,23 @@ class DraftStatus extends DraftStatusRenderer {
                     'compare' => 'EXISTS'
                 )
             ));
+            // Get existing meta query to avoid overwriting other filters
+            $meta_query = $query->get('meta_query');
+            if (empty($meta_query) || !is_array($meta_query)) {
+                $meta_query = array();
+            }
+
+            // Add our clauses for sorting. These are needed for WP_Query to join the tables.
+            $meta_query['priority_clause'] = array(
+                'key' => '_draft_priority',
+                'compare' => 'EXISTS' // We only need to ensure the key exists for sorting
+            );
+            $meta_query['completion_clause'] = array(
+                'key' => '_draft_complete',
+                'compare' => 'EXISTS'
+            );
+
+            $query->set('meta_query', $meta_query);
 
             // Custom ordering: priority first (urgent, high, medium, low), then completion
             $order = $query->get('order', 'ASC');
@@ -253,7 +268,10 @@ class DraftStatus extends DraftStatusRenderer {
     public function customPriorityOrderby($orderby, $query) {
         global $wpdb;
 
-        if (!is_admin() || !$query->is_main_query() || $query->get('orderby') !== 'draft_completion') {
+        // This filter is added dynamically only for the specific query we want to modify,
+        // so we only need to check that it's the main query in the admin context.
+        // The original check for `orderby` was buggy as the value is changed to an array.
+        if (!is_admin() || !$query->is_main_query()) {
             return $orderby;
         }
 
@@ -534,21 +552,26 @@ class DraftStatus extends DraftStatusRenderer {
             return;
         }
 
-        $meta_query = array('relation' => 'AND');
+        $meta_query = $query->get('meta_query');
+        if (empty($meta_query) || !is_array($meta_query)) {
+            $meta_query = array();
+        }
+
+        $filter_meta_query = array('relation' => 'AND');
 
         // Handle completion status filter
         if ($has_completion_filter) {
             $filter = sanitize_text_field(wp_unslash($_GET['draft_completion_filter']));
 
             if ($filter === 'complete') {
-                $meta_query[] = array(
+                $filter_meta_query[] = array(
                     'key' => '_draft_complete',
                     'value' => 'yes',
                     'compare' => '='
                 );
                 $query->set('post_status', 'draft');
             } elseif ($filter === 'incomplete') {
-                $meta_query[] = array(
+                $filter_meta_query[] = array(
                     'relation' => 'OR',
                     array(
                         'key' => '_draft_complete',
@@ -569,7 +592,7 @@ class DraftStatus extends DraftStatusRenderer {
             $priority_filter = sanitize_text_field(wp_unslash($_GET['draft_priority_filter']));
 
             if (in_array($priority_filter, $this->getValidPriorities(), true)) {
-                $meta_query[] = array(
+                $filter_meta_query[] = array(
                     'key' => '_draft_priority',
                     'value' => $priority_filter,
                     'compare' => '='
@@ -581,7 +604,8 @@ class DraftStatus extends DraftStatusRenderer {
         }
 
         // Apply meta query if we have filters
-        if (count($meta_query) > 1) {
+        if (count($filter_meta_query) > 1) {
+            $meta_query[] = $filter_meta_query;
             $query->set('meta_query', $meta_query);
         }
     }

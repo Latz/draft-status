@@ -8,48 +8,51 @@
  * @since 1.5.0
  */
 
-(function() {
-    'use strict';
+(function () {
+	'use strict';
 
-    /**
-     * Initialize the completion status toggle button
-     */
-    function initCompletionToggle() {
-        var button = document.getElementById('draft_complete_button');
-        var hiddenInput = document.getElementById('draft_complete_hidden');
+	/**
+	 * Initialize the completion status toggle button
+	 */
+	function initCompletionToggle() {
+		var button = document.getElementById('draft_complete_button');
+		var hiddenInput = document.getElementById('draft_complete_hidden');
 
-        if (!button || !hiddenInput) {
-            return;
-        }
+		if (!button || !hiddenInput) {
+			return;
+		}
 
-        button.addEventListener('click', function() {
-            var isComplete = hiddenInput.value === 'yes';
-            var newValue = isComplete ? 'no' : 'yes';
+		var iconSpan = button.querySelector('.draft-status-icon');
+		var textSpan = button.querySelector('.draft-status-text');
 
-            // Update hidden input
-            hiddenInput.value = newValue;
+		button.addEventListener('click', function () {
+			var isComplete = hiddenInput.value === 'yes';
+			var newValue = isComplete ? 'no' : 'yes';
 
-            // Update button state
-            if (newValue === 'yes') {
-                button.classList.remove('is-incomplete');
-                button.classList.add('is-complete');
-                button.setAttribute('aria-pressed', 'true');
-                button.querySelector('.draft-status-icon').textContent = '✓';
-                button.querySelector('.draft-status-text').textContent = button.getAttribute('data-complete-text') || 'Complete';
-            } else {
-                button.classList.remove('is-complete');
-                button.classList.add('is-incomplete');
-                button.setAttribute('aria-pressed', 'false');
-                button.querySelector('.draft-status-icon').textContent = '✗';
-                button.querySelector('.draft-status-text').textContent = button.getAttribute('data-incomplete-text') || 'Incomplete';
-            }
-        });
-    }
+			// Update hidden input
+			hiddenInput.value = newValue;
 
-    // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initCompletionToggle);
-    } else {
-        initCompletionToggle();
-    }
+			// Update button state
+			if (newValue === 'yes') {
+				button.classList.remove('is-incomplete');
+				button.classList.add('is-complete');
+				button.setAttribute('aria-pressed', 'true');
+				iconSpan.textContent = '✓';
+				textSpan.textContent = button.getAttribute('data-complete-text') || 'Complete';
+			} else {
+				button.classList.remove('is-complete');
+				button.classList.add('is-incomplete');
+				button.setAttribute('aria-pressed', 'false');
+				iconSpan.textContent = '✗';
+				textSpan.textContent = button.getAttribute('data-incomplete-text') || 'Incomplete';
+			}
+		});
+	}
+
+	// Initialize when DOM is ready
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initCompletionToggle);
+	} else {
+		initCompletionToggle();
+	}
 })();
