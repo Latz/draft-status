@@ -20,12 +20,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
+          coverage: pcov
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
       - name: Run unit tests
-        run: vendor/bin/phpunit --testsuite unit
+        run: vendor/bin/phpunit --testsuite unit --coverage-clover coverage.xml
 
       - name: SonarCloud analysis
         uses: SonarSource/sonarcloud-github-action@v3

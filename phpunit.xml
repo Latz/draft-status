@@ -17,6 +17,7 @@
     <coverage>
         <include>
             <file>draft-status.php</file>
+            <file>class-draft-status-renderer.php</file>
         </include>
     </coverage>
 </phpunit>

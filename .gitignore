@@ -2,3 +2,4 @@
 /.claude-dev-helper
 CLAUDE.local.md
 .env
+coverage.xml
